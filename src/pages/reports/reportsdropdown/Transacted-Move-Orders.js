@@ -43,6 +43,7 @@ export const TransactedMoveOrders = ({
             "Item Code": item.itemCode,
             "Item Description": item.itemDescription,
             UOM: item.uom,
+            "Item Remarks": item.orderRemarks ? item.orderRemarks : "-",
             "Total Quantity": item.quantity,
             "Batch Number": item.batchNo,
             "Transaction Type": item.transactionType,

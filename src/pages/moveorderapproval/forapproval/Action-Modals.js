@@ -519,7 +519,7 @@ export const ApproveModal = ({
                       <Td>{item.itemDescription}</Td>
                       <Td>{item.uom}</Td>
                       <Td>{item.quantity}</Td>
-                      <Td>{item.orderRemarks}</Td>
+                      <Td>{item.orderRemarks ? item.orderRemarks : "-"}</Td>
                       <Td></Td>
                       <Td>{moment(item.expiration).format("MM/DD/yyyy")}</Td>
                     </Tr>
