@@ -79,6 +79,7 @@ export const ErrorModal = ({
       uom: list?.uom,
       quantityOrdered: list?.quantityOrdered,
       category: list?.category,
+      orderRemarks: list?.orderRemarks,
 
       // orderDate: list.orderDate,
       // dateNeeded: list.dateNeeded,
@@ -217,6 +218,7 @@ export const ErrorModal = ({
       uom: list?.uom,
       quantityOrdered: list?.quantityOrdered,
       category: list?.category,
+      orderRemarks: list?.orderRemarks,
     };
   });
 

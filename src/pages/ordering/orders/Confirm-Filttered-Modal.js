@@ -29,6 +29,7 @@ export const ConfirmFiltteredModal = ({
   const toast = useToast();
 
   const syncHandler = () => {
+    console.log("Sync Error Data: ", resultArray);
     try {
       // setIsLoading(true)
       const res = apiClient
@@ -53,6 +54,7 @@ export const ConfirmFiltteredModal = ({
               uom: item?.uom,
               quantityOrdered: item?.quantityOrdered,
               category: item?.category,
+              orderRemarks: item?.orderRemarks,
             };
           })
         )

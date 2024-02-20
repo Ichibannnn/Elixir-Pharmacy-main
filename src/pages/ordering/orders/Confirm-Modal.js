@@ -34,92 +34,93 @@ export const ConfirmModal = ({
   const syncHandler = () => {
     if (selectedValue === "1") {
       console.log("Genus Old: ", resultArray);
-      // try {
-      //   setIsLoading(true);
-      //   const res = apiClient
-      //     .post(
-      //       `Ordering/AddNewOrders`,
-      //       resultArray.map((item) => {
-      //         return {
-      //           transactId: item?.transactId,
-      //           customerName: item?.customerName,
-      //           customerPosition: item?.customerPosition,
-      //           farmType: item?.farmType,
-      //           farmCode: item?.farmCode,
-      //           farmName: item?.farmName,
-      //           orderNo: item?.orderNo,
-      //           batchNo: item?.batchNo.toString(),
-      //           orderDate: moment(item?.orderDate).format("yyyy-MM-DD"),
-      //           dateNeeded: moment(item?.dateNeeded).format("yyyy-MM-DD"),
-      //           timeNeeded: item?.dateNeeded,
-      //           transactionType: item?.transactionType,
-      //           itemCode: item?.itemCode,
-      //           itemDescription: item?.itemDescription,
-      //           uom: item?.uom,
-      //           quantityOrdered: item?.quantityOrdered,
-      //           category: item?.category,
-      //         };
-      //       })
-      //     )
-      //     .then((res) => {
-      //       ToastComponent("Success", "Orders Synced!", "success", toast);
-      //       fetchNotification();
-      //       onClose();
-      //       setIsLoading(false);
-      //     })
-      //     .catch((err) => {
-      //       setIsLoading(false);
-      //       setErrorData(err.response.data);
-      //       if (err.response.data) {
-      //         onClose();
-      //         openError();
-      //       }
-      //     });
-      // } catch (error) {}
+      try {
+        setIsLoading(true);
+        const res = apiClient
+          .post(
+            `Ordering/AddNewOrders`,
+            resultArray.map((item) => {
+              return {
+                transactId: item?.transactId,
+                customerName: item?.customerName,
+                customerPosition: item?.customerPosition,
+                farmType: item?.farmType,
+                farmCode: item?.farmCode,
+                farmName: item?.farmName,
+                orderNo: item?.orderNo,
+                batchNo: item?.batchNo.toString(),
+                orderDate: moment(item?.orderDate).format("yyyy-MM-DD"),
+                dateNeeded: moment(item?.dateNeeded).format("yyyy-MM-DD"),
+                timeNeeded: item?.dateNeeded,
+                transactionType: item?.transactionType,
+                itemCode: item?.itemCode,
+                itemDescription: item?.itemDescription,
+                uom: item?.uom,
+                quantityOrdered: item?.quantityOrdered,
+                category: item?.category,
+              };
+            })
+          )
+          .then((res) => {
+            ToastComponent("Success", "Orders Synced!", "success", toast);
+            fetchNotification();
+            onClose();
+            setIsLoading(false);
+          })
+          .catch((err) => {
+            setIsLoading(false);
+            setErrorData(err.response.data);
+            if (err.response.data) {
+              onClose();
+              openError();
+            }
+          });
+      } catch (error) {}
     } else {
       console.log("Genus AIO: ", resultArrayNew);
-      // try {
-      //   setIsLoading(true);
-      //   const res = apiClient
-      //     .post(
-      //       `Ordering/AddNewOrders`,
-      //       resultArrayNew.map((item) => {
-      //         return {
-      //           transactId: item?.transactId,
-      //           customerName: item?.customerName,
-      //           customerPosition: item?.customerPosition,
-      //           farmType: item?.farmType,
-      //           farmCode: item?.farmCode,
-      //           farmName: item?.farmName,
-      //           orderNo: item?.orderNo,
-      //           batchNo: item?.batchNo.toString(),
-      //           orderDate: moment(item?.orderDate).format("yyyy-MM-DD"),
-      //           dateNeeded: moment(item?.dateNeeded).format("yyyy-MM-DD"),
-      //           timeNeeded: item?.dateNeeded,
-      //           transactionType: item?.transactionType,
-      //           itemCode: item?.itemCode,
-      //           itemDescription: item?.itemDescription,
-      //           uom: item?.uom,
-      //           quantityOrdered: item?.quantityOrdered,
-      //           category: item?.category,
-      //         };
-      //       })
-      //     )
-      //     .then((res) => {
-      //       ToastComponent("Success", "Orders Synced!", "success", toast);
-      //       fetchNotification();
-      //       onClose();
-      //       setIsLoading(false);
-      //     })
-      //     .catch((err) => {
-      //       setIsLoading(false);
-      //       setErrorData(err.response.data);
-      //       if (err.response.data) {
-      //         onClose();
-      //         openError();
-      //       }
-      //     });
-      // } catch (error) {}
+      try {
+        setIsLoading(true);
+        const res = apiClient
+          .post(
+            `Ordering/AddNewOrders`,
+            resultArrayNew.map((item) => {
+              return {
+                transactId: item?.transactId,
+                customerName: item?.customerName,
+                customerPosition: item?.customerPosition,
+                farmType: item?.farmType,
+                farmCode: item?.farmCode,
+                farmName: item?.farmName,
+                orderNo: item?.orderNo,
+                batchNo: item?.batchNo.toString(),
+                orderDate: moment(item?.orderDate).format("yyyy-MM-DD"),
+                dateNeeded: moment(item?.dateNeeded).format("yyyy-MM-DD"),
+                timeNeeded: item?.dateNeeded,
+                transactionType: item?.transactionType,
+                itemCode: item?.itemCode,
+                itemDescription: item?.itemDescription,
+                uom: item?.uom,
+                quantityOrdered: item?.quantityOrdered,
+                category: item?.category,
+                orderRemarks: item?.orderRemarks,
+              };
+            })
+          )
+          .then((res) => {
+            ToastComponent("Success", "Orders Synced!", "success", toast);
+            fetchNotification();
+            onClose();
+            setIsLoading(false);
+          })
+          .catch((err) => {
+            setIsLoading(false);
+            setErrorData(err.response.data);
+            if (err.response.data) {
+              onClose();
+              openError();
+            }
+          });
+      } catch (error) {}
     }
   };
 

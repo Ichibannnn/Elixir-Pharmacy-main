@@ -94,6 +94,7 @@ export const ListofOrders = ({
       uom: item?.order_details?.order?.uom,
       quantityOrdered: item?.order_details?.order?.quantity,
       category: item?.order_details?.order?.category,
+      orderRemarks: item?.order_details?.order?.remarks,
     };
   });
 
@@ -105,8 +106,8 @@ export const ListofOrders = ({
     setSelectedValue(value);
   };
 
-  console.log("Genus Old: ", genusOrders);
-  console.log("Genus New: ", genusOrdersNew);
+  // console.log("Genus Old: ", genusOrders);
+  // console.log("Genus New: ", genusOrdersNew);
   //   console.log("Selected Value:", selectedValue);
 
   //   console.log("Genus Old Counts: ", genusOrders?.genus_orders?.length);
