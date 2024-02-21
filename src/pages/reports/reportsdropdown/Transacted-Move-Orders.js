@@ -84,6 +84,7 @@ export const TransactedMoveOrders = ({
                 <Th color="white">Item Code</Th>
                 <Th color="white">Item Description</Th>
                 <Th color="white">UOM</Th>
+                <Th color="white">Item Remarks</Th>
                 <Th color="white">Total Quantity</Th>
                 <Th color="white">Batch Number</Th>
                 <Th color="white">Transaction Type</Th>
@@ -102,6 +103,7 @@ export const TransactedMoveOrders = ({
                   <Td>{item.itemCode}</Td>
                   <Td>{item.itemDescription}</Td>
                   <Td>{item.uom}</Td>
+                  <Td>{item.orderRemarks ? item.orderRemarks : "-"}</Td>
                   <Td>{item.quantity}</Td>
                   <Td>{item.batchNo}</Td>
                   <Td>{item.transactionType}</Td>

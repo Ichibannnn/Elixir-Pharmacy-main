@@ -93,6 +93,7 @@ export const MoveOrderTransactionHistory = ({
                     <Th color="white">Item Code</Th>
                     <Th color="white">Item Description</Th>
                     <Th color="white">UOM</Th>
+                    <Th color="white">Item Remarks</Th>
                     <Th color="white">Category</Th>
                     <Th color="white">Quantity</Th>
                     <Th color="white">Batch Number</Th>
@@ -122,6 +123,7 @@ export const MoveOrderTransactionHistory = ({
                       <Td>{item.itemCode}</Td>
                       <Td>{item.itemDescription}</Td>
                       <Td>{item.uom}</Td>
+                      <Td>{item.orderRemarks ? item.orderRemarks : "-"}</Td>
                       <Td>{item.category}</Td>
                       <Td>{item.quantity}</Td>
                       <Td>{item.batchNo}</Td>
