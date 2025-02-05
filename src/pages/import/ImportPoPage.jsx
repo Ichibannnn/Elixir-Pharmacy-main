@@ -1,21 +1,5 @@
-import React, { useState, useRef } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Input,
-  Select,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+import React, { useState, useRef, useEffect } from "react";
+import { Box, Button, Flex, HStack, Input, Select, Table, Tbody, Td, Text, Th, Thead, Tr, useDisclosure, useToast } from "@chakra-ui/react";
 import PageScrollImport from "../../components/PageScrollImport";
 import * as XLSX from "xlsx";
 import apiClient from "../../services/apiClient";
@@ -24,8 +8,23 @@ import DateConverter from "../../components/DateConverter";
 import moment from "moment";
 import { decodeUser } from "../../services/decode-user";
 import ErrorList from "./import-po/Error-List";
+import axios from "axios";
+import { TiArrowSync } from "react-icons/ti";
+import SyncModal from "./import-po/SyncModal";
 
 const currentUser = decodeUser();
+
+const fetchYMIRApi = async (fromDate, toDate) => {
+  const fromDateFormatted = moment(fromDate).format("yyyy-MM-DD");
+  const toDateFormatted = moment(toDate).format("yyyy-MM-DD");
+  const res = await axios.get(`https://pretestomega.rdfymir.com/backend/public/api/fedora_api?system_name=Elixir Pharmacy&from=${fromDateFormatted}&to=${toDateFormatted}`, {
+    headers: {
+      Token: "Bearer " + process.env.REACT_APP_YMIR_PROD_TOKEN,
+    },
+  });
+
+  return res.data;
+};
 
 const ImportPoPage = () => {
   const [workbook, setWorkbook] = useState([]);
@@ -33,20 +32,42 @@ const ImportPoPage = () => {
   const [isLoading, setisLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
   const [sheetOptions, setSheetOptions] = useState([]);
-
   const [errorOpener, setErrorOpener] = useState(false);
-
   const [errorData, setErrorData] = useState([]);
-
   const toast = useToast();
 
-  const {
-    isOpen: isErrorListOpen,
-    onOpen: openErrorList,
-    onClose: closeErrorList,
-  } = useDisclosure();
+  // ymir
+  const [ymirPO, setYmirPo] = useState([]);
+  const [fetchData, setFetchData] = useState(false);
+
+  const dateVar = new Date();
+  const startDate = moment(dateVar).format("yyyy-MM-DD");
+  const [fromDate, setFromDate] = useState(startDate);
+  const [toDate, setToDate] = useState(new Date());
+
+  const { isOpen: isErrorListOpen, onOpen: openErrorList, onClose: closeErrorList } = useDisclosure();
+
+  const { isOpen: isSyncOpen, onOpen: onSyncOpen, onClose: onSyncClose } = useDisclosure();
 
   const fileClear = useRef();
+
+  // GET YMIR PO
+  const getYmirPo = () => {
+    fetchYMIRApi(fromDate, toDate).then((res) => {
+      // console.log("Response: ", res);
+      setYmirPo(res);
+      setFetchData(false);
+    });
+  };
+
+  useEffect(() => {
+    if (fromDate && toDate) {
+      getYmirPo();
+    }
+    return () => {
+      setYmirPo([]);
+    };
+  }, [fromDate, toDate]);
 
   const fileRenderer = (jsonData) => {
     setExcelData([]);
@@ -132,12 +153,7 @@ const ImportPoPage = () => {
           })
           .catch((err) => {
             setisLoading(false);
-            ToastComponent(
-              "Error",
-              "Import Failed, Please check your fields.",
-              "error",
-              toast
-            );
+            ToastComponent("Error", "Import Failed, Please check your fields.", "error", toast);
             setErrorData(err.response.data);
             if (err.response.data) {
               setErrorOpener(true);
@@ -145,20 +161,10 @@ const ImportPoPage = () => {
             }
           });
       } catch (err) {
-        ToastComponent(
-          "Error!",
-          "Wrong excel format imported for PO",
-          "error",
-          toast
-        );
+        ToastComponent("Error!", "Wrong excel format imported for PO", "error", toast);
       }
     } else {
-      ToastComponent(
-        "Error!",
-        "No data provided, please check your import",
-        "error",
-        toast
-      );
+      ToastComponent("Error!", "No data provided, please check your import", "error", toast);
     }
   };
 
@@ -166,20 +172,19 @@ const ImportPoPage = () => {
     openErrorList();
   };
 
+  const openSyncYMIRModal = () => {
+    onSyncOpen();
+  };
+
   return (
-    <Flex w="full">
-      <Flex
-        h="780px"
-        ml="2%"
-        mt="2%"
-        w="96%"
-        bgColor="white"
-        flexDirection="column"
-        border="2px"
-        borderWidth="5px"
-        borderColor="secondary"
-        justifyContent="space-between"
-      >
+    <Flex w="full" direction="column">
+      <Flex width="96%" ml="2%" w="96%" mt="1%" justifyContent="end">
+        <Button onClick={() => openSyncYMIRModal()} type="submit" isLoading={isLoading} colorScheme="teal" leftIcon={<TiArrowSync fontSize="19px" />}>
+          Sync from YMIR
+        </Button>
+      </Flex>
+
+      <Flex h="750px" ml="2%" w="96%" bgColor="white" flexDirection="column" border="2px" borderWidth="5px" borderColor="secondary" justifyContent="space-between">
         <Flex>
           <PageScrollImport>
             <Table variant="striped" size="sm">
@@ -209,8 +214,7 @@ const ImportPoPage = () => {
                         ed.pR_number
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
@@ -219,8 +223,7 @@ const ImportPoPage = () => {
                         ed.pR_date
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
@@ -229,8 +232,7 @@ const ImportPoPage = () => {
                         ed.pO_number
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
@@ -239,8 +241,7 @@ const ImportPoPage = () => {
                         ed.pO_date
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
@@ -249,8 +250,7 @@ const ImportPoPage = () => {
                         ed.itemCode
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
@@ -259,8 +259,7 @@ const ImportPoPage = () => {
                         ed.itemDescription
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
@@ -269,16 +268,14 @@ const ImportPoPage = () => {
                         ed.ordered
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
                     <Td>
                       {ed.delivered < 0 ? (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       ) : (
                         ed.delivered
@@ -287,8 +284,7 @@ const ImportPoPage = () => {
                     <Td>
                       {ed.billed < 0 ? (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       ) : (
                         ed.billed
@@ -299,8 +295,7 @@ const ImportPoPage = () => {
                         ed.uom
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
@@ -309,8 +304,7 @@ const ImportPoPage = () => {
                         ed.unitPrice
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
@@ -319,8 +313,7 @@ const ImportPoPage = () => {
                         ed.vendorName
                       ) : (
                         <Text fontWeight="semibold" color="danger">
-                          Data missing. Please make sure correct excel file for
-                          PO is uploaded.
+                          Data missing. Please make sure correct excel file for PO is uploaded.
                         </Text>
                       )}
                     </Td>
@@ -337,23 +330,9 @@ const ImportPoPage = () => {
               {/* <Text color='white'>Filename:</Text>
               <Input readOnly={true} w='full' pr='150px' bgColor='white' mr={1} placeholder={fileName} /> */}
 
-              <Input
-                ref={fileClear}
-                ml={1}
-                w="47%"
-                type="file"
-                p={1}
-                mr={0.2}
-                bgColor="white"
-                onChange={(e) => fileHandler(e.target.files)}
-              />
+              <Input ref={fileClear} ml={1} w="47%" type="file" p={1} mr={0.2} bgColor="white" onChange={(e) => fileHandler(e.target.files)} />
 
-              <Select
-                onChange={(e) => sheetNumberHandlder(e.target.selectedIndex)}
-                w="31%"
-                ml={2}
-                bgColor="white"
-              >
+              <Select onChange={(e) => sheetNumberHandlder(e.target.selectedIndex)} w="31%" ml={2} bgColor="white">
                 {sheetOptions?.map((sh, i) => (
                   <option key={i}>{sh}</option>
                 ))}
@@ -361,24 +340,11 @@ const ImportPoPage = () => {
             </Flex>
             <HStack>
               {errorOpener === true ? (
-                <Button
-                  onClick={() => openErrorModal()}
-                  type="submit"
-                  isLoading={isLoading}
-                  isDisabled={isDisabled}
-                  _hover={{ color: "white", bgColor: "accent" }}
-                  color="danger"
-                >
+                <Button onClick={() => openErrorModal()} type="submit" isLoading={isLoading} isDisabled={isDisabled} _hover={{ color: "white", bgColor: "accent" }} color="danger">
                   Errors Found
                 </Button>
               ) : (
-                <Button
-                  onClick={() => submitFile(resultArray)}
-                  type="submit"
-                  isLoading={isLoading}
-                  isDisabled={isDisabled}
-                  _hover={{ color: "white", bgColor: "accent" }}
-                >
+                <Button onClick={() => submitFile(resultArray)} type="submit" isLoading={isLoading} isDisabled={isDisabled} _hover={{ color: "white", bgColor: "accent" }}>
                   Import
                 </Button>
               )}
@@ -387,12 +353,21 @@ const ImportPoPage = () => {
         </Box>
       </Flex>
 
-      {isErrorListOpen && (
-        <ErrorList
-          isOpen={isErrorListOpen}
-          onClose={closeErrorList}
-          onOpen={openErrorList}
+      {isErrorListOpen && <ErrorList isOpen={isErrorListOpen} onClose={closeErrorList} onOpen={openErrorList} errorData={errorData} />}
+      {isSyncOpen && (
+        <SyncModal
+          isOpen={isSyncOpen}
+          onClose={onSyncClose}
+          onErrorSyncModal={openErrorList}
+          ymirPO={ymirPO}
+          fetchData={fetchData}
+          setFetchData={setFetchData}
           errorData={errorData}
+          setErrorData={setErrorData}
+          fromDate={fromDate}
+          setFromDate={setFromDate}
+          toDate={toDate}
+          setToDate={setToDate}
         />
       )}
     </Flex>

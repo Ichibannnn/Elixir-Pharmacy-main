@@ -25,14 +25,7 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import {
-  Pagination,
-  PaginationNext,
-  PaginationPage,
-  PaginationPrevious,
-  PaginationContainer,
-  PaginationPageGroup,
-} from "@ajna/pagination";
+import { Pagination, PaginationNext, PaginationPage, PaginationPrevious, PaginationContainer, PaginationPageGroup } from "@ajna/pagination";
 import PageScrollReusable from "../../../components/PageScroll-Reusable";
 import { BiRightArrow } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
@@ -41,20 +34,7 @@ import { AiOutlinePrinter } from "react-icons/ai";
 import { useReactToPrint } from "react-to-print";
 import apiClient from "../../../services/apiClient";
 
-export const MRPTable = ({
-  mrpData,
-  setSelectorId,
-  selectorId,
-  setRawMatsInfo,
-  pagesCount,
-  pages,
-  currentPage,
-  setCurrentPage,
-  setPageSize,
-  setSearch,
-  pageTotal,
-  sheetData,
-}) => {
+export const MRPTable = ({ mrpData, setSelectorId, selectorId, setRawMatsInfo, pagesCount, pages, currentPage, setCurrentPage, setPageSize, setSearch, pageTotal, sheetData }) => {
   const [buttonChanger, setButtonChanger] = useState(false);
 
   const handleExport = () => {
@@ -80,10 +60,7 @@ export const MRPTable = ({
     setSearch(inputValue);
   };
 
-  const selectorHandler = (
-    id,
-    { itemCode, itemDescription, soh, bufferLevel, suggestedPo, lastUsed }
-  ) => {
+  const selectorHandler = (id, { itemCode, itemDescription, soh, bufferLevel, suggestedPo, lastUsed }) => {
     if (id) {
       setSelectorId(id);
       setRawMatsInfo({
@@ -107,40 +84,26 @@ export const MRPTable = ({
     }
   };
 
-  const {
-    isOpen: isPrint,
-    onOpen: openPrint,
-    onClose: closePrint,
-  } = useDisclosure();
+  const { isOpen: isPrint, onOpen: openPrint, onClose: closePrint } = useDisclosure();
   const printMRPHandler = () => {
     openPrint();
   };
+
+  console.log("SheetData: ", sheetData);
 
   return (
     <Flex w="full" justifyContent="center" flexDirection="column">
       <Flex justifyContent="space-between" mb={1}>
         <InputGroup w="28%">
-          <InputLeftElement
-            pointerEvents="none"
-            children={<FaSearch color="gray.300" />}
-          />
-          <Input
-            onChange={(e) => searchHandler(e.target.value)}
-            type="text"
-            placeholder="Search: Item Description"
-            focusBorderColor="accent"
-          />
-          <Button
-            onClick={printMRPHandler}
-            ml={3}
-            bgColor="secondary"
-            _hover={{ bgColor: "accent" }}
-          >
+          <InputLeftElement pointerEvents="none" children={<FaSearch color="gray.300" />} />
+          <Input onChange={(e) => searchHandler(e.target.value)} type="text" placeholder="Search: Item Description" focusBorderColor="accent" />
+          <Button onClick={printMRPHandler} ml={3} bgColor="secondary" _hover={{ bgColor: "accent" }}>
             <AiOutlinePrinter color="white" fontSize="25px" />
           </Button>
           <Button
             onClick={handleExport}
-            disabled={!sheetData}
+            isLoading={sheetData.length === 0}
+            // isLoading=
             ml={2}
             px={5}
             _hover={{ bgColor: "accent" }}
@@ -149,12 +112,7 @@ export const MRPTable = ({
           </Button>
         </InputGroup>
 
-        <Button
-          onClick={() => setButtonChanger(!buttonChanger)}
-          size="xs"
-          px={5}
-          colorScheme="blue"
-        >
+        <Button onClick={() => setButtonChanger(!buttonChanger)} size="xs" px={5} colorScheme="blue">
           {buttonChanger ? "<< Previous" : "Next >>"}
         </Button>
       </Flex>
@@ -203,13 +161,7 @@ export const MRPTable = ({
               <Tr
                 key={i}
                 onClick={() => selectorHandler(i + 1, item)}
-                bgColor={
-                  selectorId === i + 1
-                    ? "table_accent"
-                    : "none" && item.bufferLevel > item.reserve
-                    ? "gray.300"
-                    : "none"
-                }
+                bgColor={selectorId === i + 1 ? "table_accent" : "none" && item.bufferLevel > item.reserve ? "gray.300" : "none"}
                 cursor="pointer"
               >
                 {selectorId === i + 1 ? (
@@ -219,13 +171,7 @@ export const MRPTable = ({
                 ) : (
                   <Td p={0}></Td>
                 )}
-                <Td>
-                  {item.bufferLevel > item.reserve ? (
-                    <CgDanger color="red" />
-                  ) : (
-                    ""
-                  )}
-                </Td>
+                <Td>{item.bufferLevel > item.reserve ? <CgDanger color="red" /> : ""}</Td>
                 <Td>{i + 1}</Td>
                 <Td>{item.itemCode}</Td>
                 <Td>{item.itemDescription}</Td>
@@ -340,39 +286,18 @@ export const MRPTable = ({
 
       <Flex mt={5} justifyContent="end" w="full">
         <Stack>
-          <Pagination
-            pagesCount={pagesCount}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          >
+          <Pagination pagesCount={pagesCount} currentPage={currentPage} onPageChange={handlePageChange}>
             <PaginationContainer>
-              <PaginationPrevious
-                bg="secondary"
-                color="white"
-                p={1}
-                _hover={{ bg: "accent", color: "white" }}
-              >
+              <PaginationPrevious bg="secondary" color="white" p={1} _hover={{ bg: "accent", color: "white" }}>
                 {"<<"}
               </PaginationPrevious>
               <PaginationPageGroup ml={1} mr={1}>
                 {pages.map((page) => (
-                  <PaginationPage
-                    _hover={{ bg: "accent", color: "white" }}
-                    p={3}
-                    bg="secondary"
-                    color="white"
-                    key={`pagination_page_${page}`}
-                    page={page}
-                  />
+                  <PaginationPage _hover={{ bg: "accent", color: "white" }} p={3} bg="secondary" color="white" key={`pagination_page_${page}`} page={page} />
                 ))}
               </PaginationPageGroup>
               <HStack>
-                <PaginationNext
-                  bg="secondary"
-                  color="white"
-                  p={1}
-                  _hover={{ bg: "accent", color: "white" }}
-                >
+                <PaginationNext bg="secondary" color="white" p={1} _hover={{ bg: "accent", color: "white" }}>
                   {">>"}
                 </PaginationNext>
                 <Select onChange={handlePageSizeChange} variant="filled">
@@ -388,9 +313,7 @@ export const MRPTable = ({
         </Stack>
       </Flex>
 
-      {isPrint && (
-        <PrintModal isOpen={isPrint} onClose={closePrint} mrpData={mrpData} />
-      )}
+      {isPrint && <PrintModal isOpen={isPrint} onClose={closePrint} mrpData={mrpData} />}
     </Flex>
   );
 };
@@ -448,13 +371,7 @@ const PrintModal = ({ isOpen, onClose, mrpData }) => {
                   {mrpData?.inventory?.map((item, i) => (
                     <Tr key={i}>
                       {/* <Td p={0}></Td> */}
-                      <Td>
-                        {item.bufferLevel > item.reserve ? (
-                          <CgDanger color="red" />
-                        ) : (
-                          ""
-                        )}
-                      </Td>
+                      <Td>{item.bufferLevel > item.reserve ? <CgDanger color="red" /> : ""}</Td>
                       {/* <Td>{i + 1}</Td> */}
                       <Td>{item.itemCode}</Td>
                       <Td>{item.itemDescription}</Td>
@@ -521,4 +438,3 @@ const PrintModal = ({ isOpen, onClose, mrpData }) => {
     </>
   );
 };
-

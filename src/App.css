@@ -43,3 +43,25 @@
     transform: rotate(360deg);
   }
 }
+
+.my-swal {
+  z-index: 99999999 !important;
+}
+
+.my-swal-title {
+  font-size: 16px !important;
+}
+
+.my-swal-text {
+  font-size: 30px !important;
+}
+
+.norecords-found-table {
+  width: 150px;
+  height: 150px;
+  object-fit: fill;
+  border-style: none;
+  background: none;
+  z-index: 1;
+  top: 0;
+}

@@ -1,55 +1,20 @@
 import React, { useState } from "react";
-import {
-  Badge,
-  Flex,
-  HStack,
-  Input,
-  Select,
-  Skeleton,
-  Spinner,
-  Stack,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-  VStack,
-} from "@chakra-ui/react";
+import { Badge, Flex, HStack, Input, Select, Skeleton, Spinner, Stack, Table, Tbody, Td, Text, Th, Thead, Tr, useDisclosure, VStack } from "@chakra-ui/react";
 import { HiRefresh } from "react-icons/hi";
 import PageScrollReusable from "../../../components/PageScroll-Reusable";
 import { ErrorModal } from "./Error-Modal";
 import { ConfirmModal } from "./Confirm-Modal";
 import DatePicker from "react-datepicker";
 
-export const ListofOrders = ({
-  genusOrders,
-  genusOrdersNew,
-  fetchingData,
-  setFromDate,
-  setToDate,
-  fromDate,
-  toDate,
-  fetchNotification,
-}) => {
+export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFromDate, setToDate, fromDate, toDate, fetchNotification }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [keyword, setKeyword] = useState("");
   const [errorData, setErrorData] = useState([]);
   const [selectedValue, setSelectedValue] = useState(2);
 
-  const {
-    isOpen: isError,
-    onOpen: openError,
-    onClose: closeError,
-  } = useDisclosure();
-  const {
-    isOpen: isConfirm,
-    onOpen: openConfirm,
-    onClose: closeConfirm,
-  } = useDisclosure();
+  const { isOpen: isError, onOpen: openError, onClose: closeError } = useDisclosure();
+  const { isOpen: isConfirm, onOpen: openConfirm, onClose: closeConfirm } = useDisclosure();
 
   //   Old Genus Array Submit
   const resultArray = genusOrders?.genus_orders?.map((item) => {
@@ -125,7 +90,7 @@ export const ListofOrders = ({
             <DatePicker
               onChange={(date) => setFromDate(date)}
               selected={fromDate}
-              minDate={startDate}
+              // minDate={startDate}
               shouldCloseOnSelect
               dateFormat="yyyy-MM-dd"
             />
@@ -133,7 +98,7 @@ export const ListofOrders = ({
             <DatePicker
               onChange={(date) => setToDate(date)}
               selected={toDate}
-              minDate={fromDate}
+              // minDate={fromDate}
               shouldCloseOnSelect
               dateFormat="yyyy-MM-dd"
             />
@@ -161,32 +126,13 @@ export const ListofOrders = ({
           <Flex w="full" p={2} justifyContent="space-between">
             <HStack>
               <Text fontSize="sm">SEARCH:</Text>
-              <Input
-                placeholder="ex. Farm Name"
-                onChange={(e) => setKeyword(e.target.value)}
-                disabled={isLoading}
-              />
+              <Input placeholder="ex. Farm Name" onChange={(e) => setKeyword(e.target.value)} disabled={isLoading} />
             </HStack>
-            {isLoading ? (
-              <Spinner cursor="pointer" onClick={() => setIsLoading(false)} />
-            ) : (
-              <HiRefresh
-                fontSize="25px"
-                cursor="pointer"
-                onClick={() => openConfirm()}
-              />
-            )}
+            {isLoading ? <Spinner cursor="pointer" onClick={() => setIsLoading(false)} /> : <HiRefresh fontSize="25px" cursor="pointer" onClick={() => openConfirm()} />}
           </Flex>
 
           <VStack spacing={0} w="full">
-            <Text
-              py={2}
-              w="full"
-              fontSize="lg"
-              bgColor="secondary"
-              color="white"
-              textAlign="center"
-            >
+            <Text py={2} w="full" fontSize="lg" bgColor="secondary" color="white" textAlign="center">
               List of Orders
             </Text>
             <PageScrollReusable minHeight="200px" maxHeight="650px">
@@ -220,12 +166,8 @@ export const ListofOrders = ({
                     <Tbody>
                       {genusOrders?.genus_orders
                         ?.filter((val) => {
-                          const newKeyword = new RegExp(
-                            `${keyword.toLowerCase()}`
-                          );
-                          return val.order_details.farm_name
-                            ?.toLowerCase()
-                            .match(newKeyword, "*");
+                          const newKeyword = new RegExp(`${keyword.toLowerCase()}`);
+                          return val.order_details.farm_name?.toLowerCase().match(newKeyword, "*");
                         })
                         ?.map((order, i) => (
                           <Tr key={i}>
@@ -246,12 +188,8 @@ export const ListofOrders = ({
                     <Tbody>
                       {genusOrdersNew?.genus_order
                         ?.filter((val) => {
-                          const newKeyword = new RegExp(
-                            `${keyword.toLowerCase()}`
-                          );
-                          return val.order_details.farm_name
-                            ?.toLowerCase()
-                            .match(newKeyword, "*");
+                          const newKeyword = new RegExp(`${keyword.toLowerCase()}`);
+                          return val.order_details.farm_name?.toLowerCase().match(newKeyword, "*");
                         })
                         ?.map((order, i) => (
                           <Tr key={i}>
@@ -286,16 +224,7 @@ export const ListofOrders = ({
           Number of records: {genusOrdersNew?.genus_order?.length}
         </Text>
       )}
-      {isError && (
-        <ErrorModal
-          isOpen={isError}
-          onClose={closeError}
-          errorData={errorData}
-          openConfirm={openConfirm}
-          isLoading={isLoading}
-          fetchNotification={fetchNotification}
-        />
-      )}
+      {isError && <ErrorModal isOpen={isError} onClose={closeError} errorData={errorData} openConfirm={openConfirm} isLoading={isLoading} fetchNotification={fetchNotification} />}
       {isConfirm && (
         <ConfirmModal
           isOpen={isConfirm}
