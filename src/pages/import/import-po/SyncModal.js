@@ -55,36 +55,65 @@ const SyncModal = ({ isOpen, onClose, ymirPO, fetchData, setFetchData, fromDate,
   // console.log("length: ", ymirPO);
 
   const ymirResultArray = Array.isArray(ymirPO)
-    ? ymirPO.flatMap((data) =>
-        data?.rr_orders?.map((subData) => {
-          const prNumber = subData?.pr_transaction?.pr_year_number_id?.toString().trim();
-          const prNumberPart = prNumber ? prNumber.split("-") : [];
-          const poNumber = subData?.po_transaction?.po_year_number_id?.toString().trim();
-          const poNumberPart = poNumber ? poNumber.split("-") : [];
+    ? ymirPO.flatMap(
+        (data) =>
+          data?.order?.map((subData) => {
+            const prNumber = data?.pr_transaction?.pr_year_number_id?.toString().trim();
+            const prNumberPart = prNumber ? prNumber.split("-") : [];
+            const poNumber = data?.po_year_number_id?.toString().trim();
+            const poNumberPart = poNumber ? poNumber.split("-") : [];
 
-          return {
-            pR_Number: prNumberPart.length >= 3 ? Number(prNumberPart[0] + prNumberPart[2]) : null,
-            pR_Date: moment(subData?.pr_transaction?.created_at)?.format("YYYY-MM-DD")?.toString().trim(),
-            pO_Number: poNumberPart.length >= 3 ? Number(poNumberPart[0] + poNumberPart[2]) : null,
-            pO_Date: moment(subData?.po_transaction?.created_at)?.format("YYYY-MM-DD")?.toString().trim(),
+            return {
+              pR_Number: prNumberPart.length >= 3 ? Number(prNumberPart[0] + prNumberPart[2]) : null,
+              pR_Date: moment(subData?.pr_transaction?.created_at)?.format("YYYY-MM-DD")?.toString().trim(),
+              pO_Number: poNumberPart.length >= 3 ? Number(poNumberPart[0] + poNumberPart[2]) : null,
+              pO_Date: moment(subData?.po_transaction?.created_at)?.format("YYYY-MM-DD")?.toString().trim(),
 
-            itemCode: subData?.order?.item_code?.toString().trim(),
-            itemDescription: subData?.order?.item_name?.toString()?.trim(),
+              itemCode: subData?.item_code?.toString().trim(),
+              itemDescription: subData?.item_name?.toString()?.trim(),
 
-            ordered: subData?.order?.quantity?.toString().trim(),
-            delivered: subData?.quantity_receive?.toString().trim(),
-            actualRemaining: subData?.remaining.toString().trim(),
-            billed: 0,
-            uom: subData?.order?.uom?.name?.toString().trim(),
-            unitPrice: subData?.order?.price?.toString().trim(),
-            // siNumber: subData?.shipment_no?.toString().trim(),
-            // receiveDate: moment(subData?.delivery_Date)?.format("YYYY-MM-DD")?.toString().trim(),
-            vendorName: subData?.po_transaction?.supplier_name?.toString().trim(),
-            addedBy: currentUser?.fullName?.toString().trim(),
-          };
-        })
+              ordered: subData?.quantity?.toString().trim(),
+              delivered: 0,
+              billed: 0,
+              uom: subData?.uom?.name?.toString().trim(),
+              unitPrice: subData?.price?.toString().trim(),
+              vendorName: data?.supplier_name?.toString().trim(),
+              addedBy: currentUser?.fullName?.toString().trim(),
+            };
+          })
+
+        // old payload
+        // data?.rr_orders?.map((subData) => {
+        //   const prNumber = subData?.pr_transaction?.pr_year_number_id?.toString().trim();
+        //   const prNumberPart = prNumber ? prNumber.split("-") : [];
+        //   const poNumber = subData?.po_transaction?.po_year_number_id?.toString().trim();
+        //   const poNumberPart = poNumber ? poNumber.split("-") : [];
+
+        //   return {
+        //     pR_Number: prNumberPart.length >= 3 ? Number(prNumberPart[0] + prNumberPart[2]) : null,
+        //     pR_Date: moment(subData?.pr_transaction?.created_at)?.format("YYYY-MM-DD")?.toString().trim(),
+        //     pO_Number: poNumberPart.length >= 3 ? Number(poNumberPart[0] + poNumberPart[2]) : null,
+        //     pO_Date: moment(subData?.po_transaction?.created_at)?.format("YYYY-MM-DD")?.toString().trim(),
+
+        //     itemCode: subData?.order?.item_code?.toString().trim(),
+        //     itemDescription: subData?.order?.item_name?.toString()?.trim(),
+
+        //     ordered: subData?.order?.quantity?.toString().trim(),
+        //     delivered: subData?.quantity_receive?.toString().trim(),
+        //     actualRemaining: subData?.remaining.toString().trim(),
+        //     billed: 0,
+        //     uom: subData?.order?.uom?.name?.toString().trim(),
+        //     unitPrice: subData?.order?.price?.toString().trim(),
+        //     // siNumber: subData?.shipment_no?.toString().trim(),
+        //     // receiveDate: moment(subData?.delivery_Date)?.format("YYYY-MM-DD")?.toString().trim(),
+        //     vendorName: subData?.po_transaction?.supplier_name?.toString().trim(),
+        //     addedBy: currentUser?.fullName?.toString().trim(),
+        //   };
+        // })
       )
     : [];
+
+  console.log("YMIR: ", ymirResultArray);
 
   const submitSyncHandler = () => {
     Swal.fire({
