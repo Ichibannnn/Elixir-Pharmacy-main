@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Flex,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-  Button,
-} from "@chakra-ui/react";
+import { Flex, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, Button } from "@chakra-ui/react";
 import apiClient from "../../../services/apiClient";
 import PageScrollReusable from "../../../components/PageScroll-Reusable";
 import moment from "moment";
@@ -17,20 +7,11 @@ import moment from "moment";
 const fetchMiscellaneousIssueHistoryApi = async (dateFrom, dateTo) => {
   const dayaDate = new Date();
   const dateToDaya = dayaDate.setDate(dayaDate.getDate() + 1);
-  const res = await apiClient.get(
-    `Report/MiscellaneousIssueReport?dateFrom=${dateFrom}&dateTo=${moment(
-      dateToDaya
-    ).format("yyyy-MM-DD")}`
-  );
+  const res = await apiClient.get(`Report/MiscellaneousIssueReport?dateFrom=${dateFrom}&dateTo=${moment(dateToDaya).format("yyyy-MM-DD")}`);
   return res.data;
 };
 
-export const MiscellaneousIssueHistory = ({
-  dateFrom,
-  dateTo,
-  sample,
-  setSheetData,
-}) => {
+export const MiscellaneousIssueHistory = ({ dateFrom, dateTo, sample, setSheetData }) => {
   const [miscIssueData, setMiscIssueData] = useState([]);
   const [buttonChanger, setButtonChanger] = useState(true);
 
@@ -41,7 +22,7 @@ export const MiscellaneousIssueHistory = ({
         res?.map((item, i) => {
           return {
             "Line Number": i + 1,
-            "Issue ID": item.orderId,
+            "Issue ID": item.issueId,
             "Customer Code": item.customerCode,
             "Customer Name": item.customerName,
             Remarks: item.remarks ? item.remarks : "",
@@ -117,9 +98,7 @@ export const MiscellaneousIssueHistory = ({
                     <>
                       <Td>{item.expirationDate}</Td>
                       <Td>{moment(item.transactDate).format("yyyy-MM-DD")}</Td>
-                      <Td>
-                        {moment(item.transactionDate).format("yyyy-MM-DD")}
-                      </Td>
+                      <Td>{moment(item.transactionDate).format("yyyy-MM-DD")}</Td>
                       <Td>{item.transactBy}</Td>
                     </>
                   )}
@@ -131,11 +110,7 @@ export const MiscellaneousIssueHistory = ({
       </Flex>
 
       <Flex justifyContent="end" mt={2}>
-        <Button
-          size="xs"
-          colorScheme="teal"
-          onClick={() => setButtonChanger(!buttonChanger)}
-        >
+        <Button size="xs" colorScheme="teal" onClick={() => setButtonChanger(!buttonChanger)}>
           {buttonChanger ? `>>>>` : `<<<<`}
         </Button>
       </Flex>

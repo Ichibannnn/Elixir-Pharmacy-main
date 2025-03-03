@@ -1,32 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  Flex,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-  Button,
-} from "@chakra-ui/react";
+import { Flex, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, Button } from "@chakra-ui/react";
 import apiClient from "../../../services/apiClient";
 import PageScrollReusable from "../../../components/PageScroll-Reusable";
 import moment from "moment";
 
 const fetchMiscellaenouseReceiptApi = async (dateFrom, dateTo) => {
-  const res = await apiClient.get(
-    `Report/MiscellaneousReceiptReport?dateFrom=${dateFrom}&dateTo=${dateTo}`
-  );
+  const res = await apiClient.get(`Report/MiscellaneousReceiptReport?dateFrom=${dateFrom}&dateTo=${dateTo}`);
   return res.data;
 };
 
-export const MiscellaneousReceiptHistory = ({
-  dateFrom,
-  dateTo,
-  sample,
-  setSheetData,
-}) => {
+export const MiscellaneousReceiptHistory = ({ dateFrom, dateTo, sample, setSheetData }) => {
   const [miscReceiptData, setMiscReceiptData] = useState([]);
   const [buttonChanger, setButtonChanger] = useState(true);
 
@@ -40,14 +23,14 @@ export const MiscellaneousReceiptHistory = ({
             "Receipt Id": item.receiptId,
             "Supplier Code": item.supplierCode,
             "Supplier Name": item.supplierName,
-            Remarks: item.remarks ? item.remarks : "",
-            Details: item.details ? item.details : "",
+            Remarks: item.remarks ? item.remarks : "-",
+            Details: item.details ? item.details : "-",
             "Item Code": item.itemCode,
             "Item Description": item.itemDescription,
             UOM: item.uom,
             Quantity: item.quantity,
             "Expiration Date": item.expirationDate,
-            "Transacted By": item.trantedBy,
+            "Transacted By": item.transactBy,
             "Transaction Date": moment(item.transactDate).format("yyyy-MM-DD"),
           };
         })
@@ -113,9 +96,7 @@ export const MiscellaneousReceiptHistory = ({
                     <>
                       <Td>{item.expirationDate}</Td>
                       <Td>{moment(item.transactDate).format("yyyy-MM-DD")}</Td>
-                      <Td>
-                        {moment(item.transactionDate).format("yyyy-MM-DD")}
-                      </Td>
+                      <Td>{moment(item.transactionDate).format("yyyy-MM-DD")}</Td>
                       <Td>{item.transactBy}</Td>
                     </>
                   )}
@@ -127,11 +108,7 @@ export const MiscellaneousReceiptHistory = ({
       </Flex>
 
       <Flex justifyContent="end" mt={2}>
-        <Button
-          size="xs"
-          colorScheme="teal"
-          onClick={() => setButtonChanger(!buttonChanger)}
-        >
+        <Button size="xs" colorScheme="teal" onClick={() => setButtonChanger(!buttonChanger)}>
           {buttonChanger ? `>>>>` : `<<<<`}
         </Button>
       </Flex>
