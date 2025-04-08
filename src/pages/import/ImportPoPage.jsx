@@ -11,6 +11,7 @@ import ErrorList from "./import-po/Error-List";
 import axios from "axios";
 import { TiArrowSync } from "react-icons/ti";
 import SyncModal from "./import-po/SyncModal";
+import ErrorYmirList from "./import-po/ErrorYmir-List";
 
 const currentUser = decodeUser();
 
@@ -46,7 +47,7 @@ const ImportPoPage = () => {
   const [toDate, setToDate] = useState(new Date());
 
   const { isOpen: isErrorListOpen, onOpen: openErrorList, onClose: closeErrorList } = useDisclosure();
-
+  const { isOpen: isErrorYmirListOpen, onOpen: openErrorYmirList, onClose: closeErrorYmirList } = useDisclosure();
   const { isOpen: isSyncOpen, onOpen: onSyncOpen, onClose: onSyncClose } = useDisclosure();
 
   const fileClear = useRef();
@@ -354,11 +355,23 @@ const ImportPoPage = () => {
       </Flex>
 
       {isErrorListOpen && <ErrorList isOpen={isErrorListOpen} onClose={closeErrorList} onOpen={openErrorList} errorData={errorData} />}
+      {isErrorYmirListOpen && (
+        <ErrorYmirList
+          isOpen={isErrorYmirListOpen}
+          onClose={closeErrorYmirList}
+          onOpen={openErrorYmirList}
+          errorData={errorData}
+          fromDate={fromDate}
+          setFromDate={setFromDate}
+          toDate={toDate}
+          setToDate={setToDate}
+        />
+      )}
       {isSyncOpen && (
         <SyncModal
           isOpen={isSyncOpen}
           onClose={onSyncClose}
-          onErrorSyncModal={openErrorList}
+          onErrorSyncModal={openErrorYmirList}
           ymirPO={ymirPO}
           fetchData={fetchData}
           setFetchData={setFetchData}

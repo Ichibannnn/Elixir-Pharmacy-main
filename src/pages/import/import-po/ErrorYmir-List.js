@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Accordion,
   AccordionButton,
@@ -25,28 +25,36 @@ import {
   Badge,
   VStack,
   HStack,
+  useToast,
 } from "@chakra-ui/react";
 import { TiWarning } from "react-icons/ti";
 import moment from "moment";
 import PageScrollModalErrorList from "../../../components/PageScrollErrorList";
 import PageScrollImportModal from "../../../components/PageScrollImport-Modal";
 import { RiFileList3Fill } from "react-icons/ri";
+import Swal from "sweetalert2";
+import apiClient from "../../../services/apiClient";
+import { ToastComponent } from "../../../components/Toast";
+import PageScroll from "../../../components/PageScroll";
 
-const ErrorList = ({ isOpen, onClose, errorData }) => {
+const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDate, setToDate }) => {
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+
   const availableImportData = errorData?.availableImport?.map((list) => {
     return {
       pR_Number: list.pR_Number,
       pR_Date: moment(list.pR_Date).format("YYYY-MM-DD"),
       pO_Number: list.pO_Number,
       pO_Date: moment(list.pO_Date).format("YYYY-MM-DD"),
-      item_Code: list.itemCode,
-      item_Description: list.itemDescription,
+      itemCode: list.itemCode,
+      itemDescription: list.itemDescription,
       ordered: list.ordered,
       delivered: list.delivered,
       billed: list.billed,
       uom: list.uom,
-      unit_Price: list.unitPrice,
-      vendor_Name: list.vendorName,
+      unitPrice: list.unitPrice,
+      vendorName: list.vendorName,
     };
   });
 
@@ -56,14 +64,14 @@ const ErrorList = ({ isOpen, onClose, errorData }) => {
       pR_Date: moment(list.pR_Date).format("YYYY-MM-DD"),
       pO_Number: list.pO_Number,
       pO_Date: moment(list.pO_Date).format("YYYY-MM-DD"),
-      item_Code: list.itemCode,
-      item_Description: list.itemDescription,
+      itemCode: list.itemCode,
+      itemDescription: list.itemDescription,
       ordered: list.ordered,
       delivered: list.delivered,
       billed: list.billed,
       uom: list.uom,
-      unit_Price: list.unitPrice,
-      vendor_Name: list.vendorName,
+      unitPrice: list.unitPrice,
+      vendorName: list.vendorName,
     };
   });
 
@@ -124,16 +132,55 @@ const ErrorList = ({ isOpen, onClose, errorData }) => {
   const supplier = supplierNotExistData;
   const uom = uomCodeNotExistData;
 
-  // const availableImport = availableImport[0]
-  // const duplicateList = duplicateListData[0]
-  // const notExistList = notExistListData[0]
+  console.log("Error: ", available);
 
-  // console.log("Available Import", availableImportData[0])
-  // console.log("Duplicate List", duplicateListData[0])
-  // console.log("Not Exist List", notExistListData[0])
+  const submitSyncHandler = () => {
+    Swal.fire({
+      title: "Confirmation!",
+      text: "Are you sure you want to sync this purchase order list?",
+      icon: "info",
+      color: "black",
+      background: "white",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#CBD1D8",
+      confirmButtonText: "Yes",
+      heightAuto: false,
+      width: "40em",
+      customClass: {
+        container: "my-swal",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          setIsLoading(true);
+          const res = apiClient
+            .post("Import/AddNewPOManual", available)
+            .then((res) => {
+              ToastComponent("Success!", "Sync purchase orders successfully", "success", toast);
+              setIsLoading(false);
+              closeModalHandler();
+              // setIsDisabled(false);
+            })
+            .catch((err) => {
+              ToastComponent("Error!", "Sync error.", "error", toast);
+              setIsLoading(false);
+            });
+        } catch (err) {
+          ToastComponent("Error!", "Sync error.", "error", toast);
+        }
+      }
+    });
+  };
+
+  const closeModalHandler = () => {
+    setFromDate(moment(new Date()).format("yyyy-MM-DD"));
+    setToDate(moment(new Date()).format("yyyy-MM-DD"));
+    onClose();
+  };
 
   return (
-    <Modal isOpen={isOpen} onClose={() => {}} isCentered size="6xl">
+    <Modal isOpen={isOpen} onClose={() => closeModalHandler()} isCentered size="6xl">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -146,6 +193,80 @@ const ErrorList = ({ isOpen, onClose, errorData }) => {
         <PageScrollImportModal>
           <ModalBody>
             <Accordion allowToggle>
+              {/* FILTERED ORDERS */}
+              {available?.length > 0 ? (
+                <AccordionItem bgColor="gray.200">
+                  <Flex>
+                    <AccordionButton color="white" fontWeight="semibold">
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        Available for syncing <Badge color="green">{available?.length}</Badge>
+                      </Box>
+                      <AccordionIcon color="secondary" />
+                    </AccordionButton>
+                  </Flex>
+
+                  <AccordionPanel pb={4}>
+                    <PageScroll minHeight="500px" maxHeight="501px">
+                      {available ? (
+                        <Table variant="striped" size="sm" bg="form">
+                          <Thead bgColor="gray.600">
+                            <Tr>
+                              <Th color="white">PR Number</Th>
+                              <Th color="white">PR Date</Th>
+                              <Th color="white">PO Number</Th>
+                              <Th color="white">PO Date</Th>
+                              <Th color="white">Item Code</Th>
+                              <Th color="white">Item Description</Th>
+                              <Th color="white">Qty Ordered</Th>
+                              <Th color="white">Qty Delivered</Th>
+                              <Th color="white">Qty Billed</Th>
+                              <Th color="white">UOM</Th>
+                              <Th color="white">Supplier Name</Th>
+                            </Tr>
+                          </Thead>
+
+                          <Tbody>
+                            {available?.map((d, i) => (
+                              <Tr key={i}>
+                                <Td color="gray.600">{d?.pR_Number ? `${d.pR_Number.toString().substring(0, 4)}-PR-${d.pR_Number.toString().substring(4)}` : ""}</Td>
+                                <Td color="gray.600">{moment(d?.pR_Date).format("yyyy-MM-DD")}</Td>
+                                <Td color="gray.600"> {d?.pO_Number ? `${d.pO_Number.toString().substring(0, 4)}-PO-${d.pO_Number.toString().substring(4)}` : ""}</Td>
+                                <Td color="gray.600">{moment(d?.pO_Date).format("yyyy-MM-DD")}</Td>
+                                <Td color="gray.600">{d?.itemCode}</Td>
+                                <Td color="gray.600">{d?.itemDescription}</Td>
+                                <Td color="gray.600">{d?.ordered}</Td>
+                                <Td color="gray.600">{d?.delivered}</Td>
+                                <Td color="gray.600">{d?.billed}</Td>
+                                <Td color="gray.600">{d?.uom}</Td>
+                                <Td color="gray.600">{d?.vendorName}</Td>
+                              </Tr>
+                            ))}
+                          </Tbody>
+                        </Table>
+                      ) : (
+                        <Flex justifyContent="center" mt="30px">
+                          <VStack>
+                            <RiFileList3Fill fontSize="200px" />
+                            <Text color="white">There are no duplicated lists on this file</Text>
+                          </VStack>
+                        </Flex>
+                      )}
+                    </PageScroll>
+                    {available ? (
+                      <Flex justifyContent="end">
+                        <Button onClick={() => submitSyncHandler()} size="sm" _hover={{ bgColor: "accent", color: "white" }} colorScheme="teal" isLoading={isLoading}>
+                          Sync
+                        </Button>
+                      </Flex>
+                    ) : (
+                      ""
+                    )}
+                  </AccordionPanel>
+                </AccordionItem>
+              ) : (
+                ""
+              )}
+
               {/* Duplicated */}
               {duplicate?.length > 0 ? (
                 <AccordionItem bgColor="gray.200">
@@ -183,13 +304,12 @@ const ErrorList = ({ isOpen, onClose, errorData }) => {
                           <Tbody>
                             {duplicate?.map((d, i) => (
                               <Tr key={i}>
-                                {/* <Td>{ }</Td> */}
                                 <Td>{d?.pR_Number}</Td>
                                 <Td>{d?.pR_Date}</Td>
                                 <Td>{d?.pO_Number}</Td>
                                 <Td>{d?.pO_Date}</Td>
-                                <Td>{d?.item_Code}</Td>
-                                <Td>{d?.item_Description}</Td>
+                                <Td>{d?.itemCode}</Td>
+                                <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.ordered}</Td>
                                 <Td>{d?.delivered}</Td>
                                 <Td>{d?.billed}</Td>
@@ -440,85 +560,4 @@ const ErrorList = ({ isOpen, onClose, errorData }) => {
   );
 };
 
-export default ErrorList;
-
-// {available.length > 0 ?
-//     <>
-//         <Flex justifyContent='center' mt='100px' mb={2}>
-//             <Badge>Items available for import</Badge>
-//         </Flex>
-
-//         <AccordionItem bgColor='success'>
-//             <Flex>
-//                 <AccordionButton color='white' fontWeight='semibold'>
-//                     <Box flex='1' textAlign='center' color='white' fontWeight='semibold'>
-//                         Available for Import <Badge color='green'>{available?.length}</Badge>
-//                     </Box>
-//                     <AccordionIcon />
-//                 </AccordionButton>
-//             </Flex>
-
-//             <AccordionPanel pb={4}>
-//                 <PageScrollModalErrorList>
-
-//                     {
-//                         available ? (
-
-//                             <Table variant='striped' size="sm">
-
-//                                 <Thead bgColor='secondary'>
-//                                     <Tr>
-//                                         {/* <Th color='white'>ID</Th> */}
-//                                         <Th color='white'>PR Number</Th>
-//                                         <Th color='white'>PR Date</Th>
-//                                         <Th color='white'>PO Number</Th>
-//                                         <Th color='white'>PO Date</Th>
-//                                         <Th color='white'>Item Code</Th>
-//                                         <Th color='white'>Item Description</Th>
-//                                         <Th color='white'>Ordered</Th>
-//                                         <Th color='white'>Delivered</Th>
-//                                         <Th color='white'>Billed</Th>
-//                                         <Th color='white'>UOM</Th>
-//                                         <Th color='white'>Unit Price</Th>
-//                                         <Th color='white'>Vendor Name</Th>
-//                                     </Tr>
-//                                 </Thead>
-
-//                                 <Tbody>
-//                                     {available?.map((a, i) =>
-//                                         <Tr>
-//                                             {/* <Td>{ }</Td> */}
-//                                             <Td>{a?.pR_Number}</Td>
-//                                             <Td>{a?.pR_Date}</Td>
-//                                             <Td>{a?.pO_Number}</Td>
-//                                             <Td>{a?.pO_Date}</Td>
-//                                             <Td>{a?.item_Code}</Td>
-//                                             <Td>{a?.item_Description}</Td>
-//                                             <Td>{a?.ordered}</Td>
-//                                             <Td>{a?.delivered}</Td>
-//                                             <Td>{a?.billed}</Td>
-//                                             <Td>{a?.uom}</Td>
-//                                             <Td>{a?.unit_Price}</Td>
-//                                             <Td>{a?.vendor_Name}</Td>
-//                                         </Tr>
-//                                     )}
-//                                 </Tbody>
-
-//                             </Table>
-
-//                         )
-//                             :
-//                             <Flex justifyContent='center' mt='30px'>
-//                                 <VStack>
-//                                     <RiFileList3Fill fontSize='200px' />
-//                                     <Text color='white'>There are no lists that can be imported with this file</Text>
-//                                 </VStack>
-//                             </Flex>
-//                     }
-
-//                 </PageScrollModalErrorList>
-
-//             </AccordionPanel>
-//         </AccordionItem>
-//     </>
-//     : ''}
+export default ErrorYmirList;
