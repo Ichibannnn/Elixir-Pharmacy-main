@@ -15,16 +15,13 @@ import {
   ModalFooter,
   ModalOverlay,
   Select,
-  Skeleton,
   Table,
   Tbody,
   Td,
-  Text,
   Th,
   Thead,
   Tr,
   useDisclosure,
-  VStack,
 } from "@chakra-ui/react";
 import { MiscellaneousIssueHistory } from "./reportsdropdown/Miscellaneous-Issue-History";
 import { MiscellaneousReceiptHistory } from "./reportsdropdown/Miscellaneous-Receipt-History";
@@ -40,6 +37,8 @@ import { TransformationReportHistoryTesting } from "../../sandbox/Transformation
 import { TransformationReportHistoryTestingTwo } from "../../sandbox/Transformation-Report-TestingTwo";
 import { useReactToPrint } from "react-to-print";
 import PageScrollReusable from "../../components/PageScroll-Reusable";
+import { ConsolidatedReportsFinance } from "./reportsdropdown/Consolidated-Finance";
+import { ConsolidatedReportsAudit } from "./reportsdropdown/Consolidated-Audit";
 
 const Reports = () => {
   const [dateFrom, setDateFrom] = useState(moment(new Date()).format("yyyy-MM-DD"));
@@ -110,8 +109,10 @@ const Reports = () => {
                   <option value={6}>Miscellaneous Receipt History</option>
                   <option value={7}>Transacted Move Orders</option>
                   <option value={8}>Cancelled Orders</option>
-                  <option value={9}>Inventory Movement</option>
-                  <option value={10}>Nearly Expiry Report</option>
+                  <option value={9}>Consolidated Report (Finance)</option>
+                  <option value={10}>Consolidated Report (Audit)</option>
+                  <option value={11}>Inventory Movement</option>
+                  <option value={12}>Nearly Expiry Report</option>
                 </Select>
                 <Button onClick={handleExport} disabled={sheetData?.length === 0 || !sample} size="sm" colorScheme="teal">
                   Export
@@ -129,7 +130,7 @@ const Reports = () => {
 
             {/* Viewing Condition  */}
             <Flex justifyContent="start">
-              {sample < 10 ? (
+              {sample < 12 ? (
                 <Flex justifyContent="start" flexDirection="row">
                   {/* <Flex flexDirection='column' ml={1}>
                                             <Flex>
@@ -143,7 +144,7 @@ const Reports = () => {
                                                 <option value={60}>Transacted</option>
                                             </Select>
                                         </Flex> */}
-                  {sample != 9 && (
+                  {sample != 11 && (
                     <Flex flexDirection="column" ml={1}>
                       <Flex>
                         <Badge>Date from</Badge>
@@ -153,7 +154,7 @@ const Reports = () => {
                   )}
                   <Flex flexDirection="column" ml={1}>
                     <Flex>
-                      <Badge>{sample === 9 ? "Rollback Date" : "Date to"}</Badge>
+                      <Badge>{sample === 11 ? "Rollback Date" : "Date to"}</Badge>
                     </Flex>
                     <Input
                       bgColor="#fff8dc"
@@ -165,7 +166,7 @@ const Reports = () => {
                   </Flex>
                 </Flex>
               ) : (
-                sample === 10 && (
+                sample === 12 && (
                   <Flex justifyContent="start" flexDirection="column" ml={1}>
                     <Flex>
                       <Badge>Expiry Days</Badge>
@@ -201,8 +202,12 @@ const Reports = () => {
             ) : sample === 8 ? (
               <CancelledOrders sample={sample} dateFrom={dateFrom} dateTo={dateTo} setSheetData={setSheetData} />
             ) : sample === 9 ? (
-              <InventoryMovement dateFrom={dateFrom} dateTo={dateTo} sample={sample} setSheetData={setSheetData} />
+              <ConsolidatedReportsFinance dateFrom={dateFrom} dateTo={dateTo} />
             ) : sample === 10 ? (
+              <ConsolidatedReportsAudit dateFrom={dateFrom} dateTo={dateTo} />
+            ) : sample === 11 ? (
+              <InventoryMovement dateFrom={dateFrom} dateTo={dateTo} sample={sample} setSheetData={setSheetData} />
+            ) : sample === 12 ? (
               <NearlyExpiryReports sample={sample} expiryDays={expiryDays} setSheetData={setSheetData} />
             ) : (
               ""
