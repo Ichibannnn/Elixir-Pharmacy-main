@@ -39,6 +39,7 @@ import { useReactToPrint } from "react-to-print";
 import PageScrollReusable from "../../components/PageScroll-Reusable";
 import { ConsolidatedReportsFinance } from "./reportsdropdown/Consolidated-Finance";
 import { ConsolidatedReportsAudit } from "./reportsdropdown/Consolidated-Audit";
+import apiClient from "../../services/apiClient";
 
 const Reports = () => {
   const [dateFrom, setDateFrom] = useState(moment(new Date()).format("yyyy-MM-DD"));
@@ -63,13 +64,65 @@ const Reports = () => {
     }
   };
 
-  const handleExport = () => {
-    var workbook = XLSX.utils.book_new(),
-      worksheet = XLSX.utils.json_to_sheet(sheetData);
+  const handleExport = async () => {
+    if (sample === 9) {
+      setIsLoading(true);
+      try {
+        const response = await apiClient.get("Report/ExportConsolidateFinance", {
+          params: {
+            DateFrom: dateFrom,
+            DateTo: dateTo,
+            // Search: search,
+          },
+          responseType: "blob",
+        });
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        console.log("Response: ", response);
 
-    XLSX.writeFile(workbook, "Elixir_Reports_ExportFile.xlsx");
+        const url = window.URL.createObjectURL(new Blob([response.data]), { type: response.headers["content-type"] });
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "Consolidated_Finance_Report.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setIsLoading(false);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    } else if (sample === 10) {
+      setIsLoading(true);
+      try {
+        const response = await apiClient.get("Report/ConsolidateAuditExport", {
+          params: {
+            DateFrom: dateFrom,
+            DateTo: dateTo,
+            // Search: search,
+          },
+          responseType: "blob",
+        });
+
+        console.log("Response: ", response);
+
+        const url = window.URL.createObjectURL(new Blob([response.data]), { type: response.headers["content-type"] });
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "Consolidated_Audit_Report.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setIsLoading(false);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    } else {
+      var workbook = XLSX.utils.book_new(),
+        worksheet = XLSX.utils.json_to_sheet(sheetData);
+
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+      XLSX.writeFile(workbook, "Elixir_Reports_ExportFile.xlsx");
+    }
   };
 
   const printMiscTransaction = () => {
@@ -114,7 +167,8 @@ const Reports = () => {
                   <option value={11}>Inventory Movement</option>
                   <option value={12}>Nearly Expiry Report</option>
                 </Select>
-                <Button onClick={handleExport} disabled={sheetData?.length === 0 || !sample} size="sm" colorScheme="teal">
+
+                <Button onClick={handleExport} disabled={sheetData?.length === 0 || !sample} isLoading={isLoading} size="sm" colorScheme="teal">
                   Export
                 </Button>
 
@@ -202,9 +256,9 @@ const Reports = () => {
             ) : sample === 8 ? (
               <CancelledOrders sample={sample} dateFrom={dateFrom} dateTo={dateTo} setSheetData={setSheetData} />
             ) : sample === 9 ? (
-              <ConsolidatedReportsFinance dateFrom={dateFrom} dateTo={dateTo} />
+              <ConsolidatedReportsFinance dateFrom={dateFrom} dateTo={dateTo} sample={sample} setSheetData={setSheetData} />
             ) : sample === 10 ? (
-              <ConsolidatedReportsAudit dateFrom={dateFrom} dateTo={dateTo} />
+              <ConsolidatedReportsAudit dateFrom={dateFrom} dateTo={dateTo} sample={sample} setSheetData={setSheetData} />
             ) : sample === 11 ? (
               <InventoryMovement dateFrom={dateFrom} dateTo={dateTo} sample={sample} setSheetData={setSheetData} />
             ) : sample === 12 ? (

@@ -22,8 +22,8 @@ export const ConsolidatedReportsAudit = ({ dateFrom, dateTo, setSheetData, searc
     fetchConsolidatedApi(dateFrom, dateTo, search).then((res) => {
       console.log("res: ", res);
 
-      setConsolidatedData(res);
       setSheetData(res);
+      setConsolidatedData(res);
     });
   };
 
@@ -35,7 +35,7 @@ export const ConsolidatedReportsAudit = ({ dateFrom, dateTo, setSheetData, searc
     };
   }, [dateFrom, dateTo, search]);
 
-  console.log("consolidatedData: ", consolidatedData);
+  // console.log("consolidatedData: ", consolidatedData);
 
   return (
     <Flex w="full" flexDirection="column">

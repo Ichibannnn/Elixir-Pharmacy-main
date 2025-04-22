@@ -35,7 +35,7 @@ export const ConsolidatedReportsFinance = ({ dateFrom, dateTo, setSheetData, sea
     };
   }, [dateFrom, dateTo, search]);
 
-  console.log("consolidatedData: ", consolidatedData);
+  // console.log("consolidatedData: ", consolidatedData);
 
   return (
     <Flex w="full" flexDirection="column">
