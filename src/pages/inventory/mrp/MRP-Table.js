@@ -34,7 +34,21 @@ import { AiOutlinePrinter } from "react-icons/ai";
 import { useReactToPrint } from "react-to-print";
 import apiClient from "../../../services/apiClient";
 
-export const MRPTable = ({ mrpData, setSelectorId, selectorId, setRawMatsInfo, pagesCount, pages, currentPage, setCurrentPage, setPageSize, setSearch, pageTotal, sheetData }) => {
+export const MRPTable = ({
+  mrpData,
+  setSelectorId,
+  selectorId,
+  setRawMatsInfo,
+  pagesCount,
+  pages,
+  currentPage,
+  setCurrentPage,
+  setPageSize,
+  searchValue,
+  setSearchValue,
+  pageTotal,
+  sheetData,
+}) => {
   const [buttonChanger, setButtonChanger] = useState(false);
 
   const handleExport = () => {
@@ -57,7 +71,7 @@ export const MRPTable = ({ mrpData, setSelectorId, selectorId, setRawMatsInfo, p
 
   const searchHandler = (inputValue) => {
     setCurrentPage(1);
-    setSearch(inputValue);
+    setSearchValue(inputValue);
   };
 
   const selectorHandler = (id, { itemCode, itemDescription, soh, bufferLevel, suggestedPo, lastUsed }) => {
@@ -96,7 +110,7 @@ export const MRPTable = ({ mrpData, setSelectorId, selectorId, setRawMatsInfo, p
       <Flex justifyContent="space-between" mb={1}>
         <InputGroup w="28%">
           <InputLeftElement pointerEvents="none" children={<FaSearch color="gray.300" />} />
-          <Input onChange={(e) => searchHandler(e.target.value)} type="text" placeholder="Search: Item Description" focusBorderColor="accent" />
+          <Input value={searchValue} onChange={(e) => searchHandler(e.target.value)} type="text" placeholder="Search: Item Description" focusBorderColor="accent" />
           <Button onClick={printMRPHandler} ml={3} bgColor="secondary" _hover={{ bgColor: "accent" }}>
             <AiOutlinePrinter color="white" fontSize="25px" />
           </Button>

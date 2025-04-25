@@ -53,7 +53,7 @@ export const ConsolidatedReportsAudit = ({ dateFrom, dateTo, setSheetData, searc
                     <Th color="white">UOM</Th>
                     <Th color="white">Category</Th>
                     <Th color="white">Quantity</Th>
-                    <Th color="white">Unit Cost</Th>
+                    <Th color="white">Unit Price</Th>
                     <Th color="white">Line Amount</Th>
                     <Th color="white">Source</Th>
                     <Th color="white">Transaction Type</Th>
@@ -100,13 +100,13 @@ export const ConsolidatedReportsAudit = ({ dateFrom, dateTo, setSheetData, searc
                         })}
                       </Td>
                       <Td>
-                        {item?.unitCost.toLocaleString(undefined, {
+                        {item?.unitCost?.toLocaleString(undefined, {
                           maximumFractionDigits: 2,
                           minimumFractionDigits: 2,
                         })}
                       </Td>
                       <Td>
-                        {item?.lineAmount.toLocaleString(undefined, {
+                        {item?.lineAmount?.toLocaleString(undefined, {
                           maximumFractionDigits: 2,
                           minimumFractionDigits: 2,
                         })}

@@ -37,7 +37,7 @@ import apiClient from "../../../services/apiClient";
 import { ToastComponent } from "../../../components/Toast";
 import PageScroll from "../../../components/PageScroll";
 
-const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDate, setToDate }) => {
+const ErrorYmirList = ({ isOpen, onClose, errorData, setFromDate, setToDate, onCloseYmir, getYmirPo }) => {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,6 +47,7 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
       pR_Date: moment(list.pR_Date).format("YYYY-MM-DD"),
       pO_Number: list.pO_Number,
       pO_Date: moment(list.pO_Date).format("YYYY-MM-DD"),
+
       itemCode: list.itemCode,
       itemDescription: list.itemDescription,
       ordered: list.ordered,
@@ -55,6 +56,9 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
       uom: list.uom,
       unitPrice: list.unitPrice,
       vendorName: list.vendorName,
+
+      ymir_PR_Number: list.ymir_PR_Number,
+      ymir_PO_Number: list.ymir_PO_Number,
     };
   });
 
@@ -132,7 +136,7 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
   const supplier = supplierNotExistData;
   const uom = uomCodeNotExistData;
 
-  console.log("Error: ", available);
+  console.log("Error: ", errorData);
 
   const submitSyncHandler = () => {
     Swal.fire({
@@ -152,6 +156,7 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
       },
     }).then((result) => {
       if (result.isConfirmed) {
+        console.log("Available: ", available);
         try {
           setIsLoading(true);
           const res = apiClient
@@ -159,6 +164,8 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
             .then((res) => {
               ToastComponent("Success!", "Sync purchase orders successfully", "success", toast);
               setIsLoading(false);
+              getYmirPo();
+              onCloseYmir();
               closeModalHandler();
               // setIsDisabled(false);
             })
@@ -253,8 +260,8 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
                       )}
                     </PageScroll>
                     {available ? (
-                      <Flex justifyContent="end">
-                        <Button onClick={() => submitSyncHandler()} size="sm" _hover={{ bgColor: "accent", color: "white" }} colorScheme="teal" isLoading={isLoading}>
+                      <Flex justifyContent="end" mt={2}>
+                        <Button onClick={() => submitSyncHandler()} size="sm" colorScheme="teal" isLoading={isLoading}>
                           Sync
                         </Button>
                       </Flex>
@@ -267,7 +274,7 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
                 ""
               )}
 
-              {/* Duplicated */}
+              {/* DUPLICATED */}
               {duplicate?.length > 0 ? (
                 <AccordionItem bgColor="gray.200">
                   <Flex>
@@ -304,9 +311,9 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
                           <Tbody>
                             {duplicate?.map((d, i) => (
                               <Tr key={i}>
-                                <Td>{d?.pR_Number}</Td>
+                                <Td color="gray.600">{d?.pR_Number ? `${d.pR_Number.toString().substring(0, 4)}-PR-${d.pR_Number.toString().substring(4)}` : ""}</Td>
                                 <Td>{d?.pR_Date}</Td>
-                                <Td>{d?.pO_Number}</Td>
+                                <Td color="gray.600">{d?.pO_Number ? `${d.pO_Number.toString().substring(0, 4)}-PO-${d.pO_Number.toString().substring(4)}` : ""}</Td>
                                 <Td>{d?.pO_Date}</Td>
                                 <Td>{d?.itemCode}</Td>
                                 <Td>{d?.itemDescription}</Td>
@@ -335,7 +342,7 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
                 ""
               )}
 
-              {/* Item Code */}
+              {/* ITEM CODE */}
               {itemCode?.length > 0 ? (
                 <AccordionItem bgColor="gray.200">
                   <Flex>
@@ -373,9 +380,9 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
                             {itemCode?.map((ne, i) => (
                               <Tr key={i}>
                                 {/* <Td>{ }</Td> */}
-                                <Td>{ne?.pR_Number}</Td>
+                                <Td color="gray.600">{ne?.pR_Number ? `${ne.pR_Number.toString().substring(0, 4)}-PR-${ne.pR_Number.toString().substring(4)}` : ""}</Td>
                                 <Td>{ne?.pR_Date}</Td>
-                                <Td>{ne?.pO_Number}</Td>
+                                <Td color="gray.600">{ne?.pO_Number ? `${ne.pR_Number.toString().substring(0, 4)}-PO-${ne.pO_Number.toString().substring(4)}` : ""}</Td>
                                 <Td>{ne?.pO_Date}</Td>
                                 <Td>{ne?.item_Code}</Td>
                                 <Td>{ne?.item_Description}</Td>
@@ -404,7 +411,7 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
                 ""
               )}
 
-              {/* Supplier */}
+              {/* SUPPLIER */}
               {supplier?.length > 0 ? (
                 <AccordionItem bgColor="gray.200">
                   <Flex>
@@ -442,9 +449,9 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
                             {supplier?.map((ne, i) => (
                               <Tr key={i}>
                                 {/* <Td>{ }</Td> */}
-                                <Td>{ne?.pR_Number}</Td>
+                                <Td color="gray.600">{ne?.pR_Number ? `${ne.pR_Number.toString().substring(0, 4)}-PR-${ne.pR_Number.toString().substring(4)}` : ""}</Td>
                                 <Td>{ne?.pR_Date}</Td>
-                                <Td>{ne?.pO_Number}</Td>
+                                <Td color="gray.600">{ne?.pO_Number ? `${ne.pO_Number.toString().substring(0, 4)}-PO-${ne.pO_Number.toString().substring(4)}` : ""}</Td>
                                 <Td>{ne?.pO_Date}</Td>
                                 <Td>{ne?.item_Code}</Td>
                                 <Td>{ne?.item_Description}</Td>
@@ -511,9 +518,9 @@ const ErrorYmirList = ({ isOpen, onClose, errorData, fromDate, setFromDate, toDa
                             {uom?.map((ne, i) => (
                               <Tr key={i}>
                                 {/* <Td>{ }</Td> */}
-                                <Td>{ne?.pR_Number}</Td>
+                                <Td color="gray.600">{ne?.pR_Number ? `${ne.pR_Number.toString().substring(0, 4)}-PR-${ne.pR_Number.toString().substring(4)}` : ""}</Td>
                                 <Td>{ne?.pR_Date}</Td>
-                                <Td>{ne?.pO_Number}</Td>
+                                <Td color="gray.600">{ne?.pO_Number ? `${ne.pO_Number.toString().substring(0, 4)}-PO-${ne.pO_Number.toString().substring(4)}` : ""}</Td>
                                 <Td>{ne?.pO_Date}</Td>
                                 <Td>{ne?.item_Code}</Td>
                                 <Td>{ne?.item_Description}</Td>

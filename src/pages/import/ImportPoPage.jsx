@@ -354,17 +354,19 @@ const ImportPoPage = () => {
         </Box>
       </Flex>
 
-      {isErrorListOpen && <ErrorList isOpen={isErrorListOpen} onClose={closeErrorList} onOpen={openErrorList} errorData={errorData} />}
+      {isErrorListOpen && <ErrorList isOpen={isErrorListOpen} onClose={closeErrorList} onOpen={openErrorList} errorData={errorData} setExcelData={setExcelData} />}
       {isErrorYmirListOpen && (
         <ErrorYmirList
           isOpen={isErrorYmirListOpen}
           onClose={closeErrorYmirList}
+          onCloseYmir={onSyncClose}
           onOpen={openErrorYmirList}
           errorData={errorData}
           fromDate={fromDate}
           setFromDate={setFromDate}
           toDate={toDate}
           setToDate={setToDate}
+          getYmirPo={getYmirPo}
         />
       )}
       {isSyncOpen && (

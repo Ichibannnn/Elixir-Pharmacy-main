@@ -93,6 +93,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
               // minDate={startDate}
               shouldCloseOnSelect
               dateFormat="yyyy-MM-dd"
+              onKeyDown={(e) => e.preventDefault()}
             />
             <Badge>To:</Badge>
             <DatePicker
@@ -101,6 +102,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
               // minDate={fromDate}
               shouldCloseOnSelect
               dateFormat="yyyy-MM-dd"
+              onKeyDown={(e) => e.preventDefault()}
             />
           </HStack>
           <HStack>

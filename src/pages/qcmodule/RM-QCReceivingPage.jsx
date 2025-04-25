@@ -39,6 +39,7 @@ import moment from "moment";
 import { EditModalComponent } from "./qc-receiving-page/Edit-Modal";
 import { CancelModalComponent } from "./qc-receiving-page/Cancel-Modal";
 import { NotificationContext } from "../../context/NotificationContext";
+import useDebounce from "../../hooks/useDebounce";
 
 const fetchPoApi = async (pageNumber, pageSize, search) => {
   const res = await apiClient.get(`Receiving/GetAllAvailablePoWithPaginationOrig?pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}`);
@@ -49,10 +50,14 @@ const QCReceivingPage = ({ fetchNotification }) => {
   const [poData, setPoData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pageTotal, setPageTotal] = useState(undefined);
-  const [search, setSearch] = useState("");
+
   const [viewingData, setViewingData] = useState([]);
   const [editData, setEditData] = useState([]);
   const [poId, setPoId] = useState(null);
+
+  const [searchValue, setSearchValue] = useState("");
+  const search = useDebounce(searchValue, 700);
+
   const { isOpen: isViewModalOpen, onOpen: openViewModal, onClose: closeViewModal } = useDisclosure();
   const { isOpen: isEditModalOpen, onOpen: openEditModal, onClose: closeEditModal } = useDisclosure();
   const { isOpen: isCancelModalOpen, onOpen: openCancelModal, onClose: closeCancelModal } = useDisclosure();
@@ -90,12 +95,12 @@ const QCReceivingPage = ({ fetchNotification }) => {
   };
 
   const searchHandler = (inputValue) => {
-    setKeyword(inputValue);
-    setSearch(inputValue);
+    setCurrentPage(1);
+    setSearchValue(inputValue);
   };
 
-  const viewModalHandler = (id, pO_Number, pO_Date, pR_Number, pR_Date) => {
-    setViewingData({ id, pO_Number, pO_Date, pR_Number, pR_Date });
+  const viewModalHandler = (id, pO_Number, pO_Date, pR_Number, pR_Date, ymir_PO_Number, ymir_PR_Number) => {
+    setViewingData({ id, pO_Number, pO_Date, pR_Number, pR_Date, ymir_PO_Number, ymir_PR_Number });
     openViewModal();
   };
 
@@ -109,8 +114,6 @@ const QCReceivingPage = ({ fetchNotification }) => {
     openCancelModal();
   };
 
-  const [keyword, setKeyword] = useState("");
-
   return (
     <Flex p={5} w="full" flexDirection="column">
       <Flex justifyContent="center">
@@ -123,7 +126,7 @@ const QCReceivingPage = ({ fetchNotification }) => {
         <HStack>
           <InputGroup>
             <InputLeftElement pointerEvents="none" children={<FaSearch color="gray.300" />} />
-            <Input type="text" placeholder="Search: Item Description" focusBorderColor="accent" onChange={(e) => searchHandler(e.target.value)} />
+            <Input value={searchValue} type="text" placeholder="Search: Item Description" focusBorderColor="accent" onChange={(e) => searchHandler(e.target.value)} />
           </InputGroup>
         </HStack>
 
@@ -170,7 +173,7 @@ const QCReceivingPage = ({ fetchNotification }) => {
                 ?.map((po) => (
                   <Tr key={po.id}>
                     {/* <Td>{po.id}</Td> */}
-                    <Td>{po.pO_Number}</Td>
+                    <Td>{po?.ymir_PO_Number === null ? po.pO_Number : po.ymir_PO_Number}</Td>
                     <Td>{po.itemCode}</Td>
                     <Td>{po.itemDescription}</Td>
                     <Td>{po.supplier}</Td>
@@ -181,7 +184,7 @@ const QCReceivingPage = ({ fetchNotification }) => {
                     <Td>
                       <HStack spacing={4}>
                         <Button
-                          onClick={() => viewModalHandler(po.id, po.pO_Number, po.pO_Date, po.pR_Number, po.pr_Date)}
+                          onClick={() => viewModalHandler(po.id, po.pO_Number, po.pO_Date, po.pR_Number, po.pr_Date, po.ymir_PO_Number, po.ymir_PR_Number)}
                           color="white"
                           bgColor="#5CB85C"
                           _hover={{ bgColor: "secondary", color: "white" }}
@@ -284,9 +287,9 @@ const ViewModalComponent = ({ isOpen, onClose, viewingData }) => {
 
                   <Tbody>
                     <Tr key={viewingData.id}>
-                      <Td>{viewingData.pO_Number}</Td>
+                      <Td>{viewingData?.ymir_PO_Number === null ? viewingData.pO_Number : viewingData.ymir_PO_Number}</Td>
                       <Td>{moment(viewingData.pO_Date).format("MM/DD/YYYY")}</Td>
-                      <Td>{viewingData.pR_Number}</Td>
+                      <Td>{viewingData?.ymir_PR_Number === null ? viewingData.pR_Number : viewingData.ymir_PR_Number}</Td>
                       <Td>{moment(viewingData.pR_Date).format("MM/DD/YYYY")}</Td>
                     </Tr>
                   </Tbody>

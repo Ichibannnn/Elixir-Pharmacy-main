@@ -65,6 +65,7 @@ const SyncModal = ({ isOpen, onClose, ymirPO = [], fetchData, setFetchData, from
             pR_Date: moment(data?.pr_transaction?.created_at)?.format("YYYY-MM-DD")?.toString().trim(),
             pO_Number: poNumberPart.length >= 3 ? Number(poNumberPart[0] + poNumberPart[2]) : null,
             pO_Date: moment(data?.created_at)?.format("YYYY-MM-DD")?.toString().trim(),
+
             ymir_PR_Number: data?.pr_transaction?.pr_year_number_id?.toString().trim(),
             ymir_PO_Number: data?.po_year_number_id?.toString().trim(),
 
@@ -105,37 +106,38 @@ const SyncModal = ({ isOpen, onClose, ymirPO = [], fetchData, setFetchData, from
     }).then((result) => {
       if (result.isConfirmed) {
         console.log("YMIR Submit Payload: ", ymirResultArray);
-        // if (ymirResultArray.length > 0) {
-        //   const hasZeroUnitCost = ymirResultArray.some((data) => data.unitPrice <= 0);
+        if (ymirResultArray.length > 0) {
+          const hasZeroUnitCost = ymirResultArray.some((data) => data.unitPrice <= 0);
 
-        //   if (hasZeroUnitCost) {
-        //     ToastComponent("Warning!", "Unit Cost cannot be zero value", "warning", toast);
-        //   } else {
-        //     try {
-        //       setFetchData(true);
-        //       const res = apiClient
-        //         .post("Import/AddNewPOManual", ymirResultArray)
-        //         .then((res) => {
-        //           ToastComponent("Success!", "Sync purchase orders successfully", "success", toast);
-        //           setFetchData(false);
-        //           closeModalHandler();
-        //           // setIsDisabled(false);
-        //         })
-        //         .catch((err) => {
-        //           ToastComponent("Error!", "Sync error.", "error", toast);
-        //           setFetchData(false);
-        //           setErrorData(err.response.data);
-        //           if (err.response.data) {
-        //             onErrorSyncModal();
-        //           }
-        //         });
-        //     } catch (err) {
-        //       ToastComponent("Error!", "Sync error.", "error", toast);
-        //     }
-        //   }
-        // } else {
-        //   ToastComponent("Error!", "Sync error.", "error", toast);
-        // }
+          if (hasZeroUnitCost) {
+            ToastComponent("Warning!", "Unit Cost cannot be zero value", "warning", toast);
+          } else {
+            try {
+              setFetchData(true);
+              const res = apiClient
+                .post("Import/AddNewPOManual", ymirResultArray)
+                .then((res) => {
+                  ToastComponent("Success!", "Sync purchase orders successfully", "success", toast);
+                  setFetchData(false);
+                  closeModalHandler();
+                  // setIsDisabled(false);
+                })
+                .catch((err) => {
+                  console.log("Error Data: ", err.response.data);
+                  ToastComponent("Error!", "Sync error.", "error", toast);
+                  setFetchData(false);
+                  setErrorData(err.response.data);
+                  if (err.response.data) {
+                    onErrorSyncModal();
+                  }
+                });
+            } catch (err) {
+              ToastComponent("Error!", "Sync error.", "error", toast);
+            }
+          }
+        } else {
+          ToastComponent("Error!", "Sync error.", "error", toast);
+        }
       }
     });
   };
@@ -171,11 +173,17 @@ const SyncModal = ({ isOpen, onClose, ymirPO = [], fetchData, setFetchData, from
                   <Badge fontSize="xs" colorScheme="facebook" variant="solid">
                     From:
                   </Badge>
-                  <Input onChange={(date) => setFromDate(date.target.value)} defaultValue={fromDate} min={minDate} type="date" />
+                  <Input onChange={(date) => setFromDate(date.target.value)} defaultValue={fromDate} min={minDate} type="date" onKeyDown={(e) => e.preventDefault()} />
                   <Badge fontSize="xs" colorScheme="facebook" variant="solid">
                     To:
                   </Badge>
-                  <Input onChange={(date) => setToDate(date.target.value)} defaultValue={moment(new Date()).format("yyyy-MM-DD")} min={fromDate} type="date" />
+                  <Input
+                    onChange={(date) => setToDate(date.target.value)}
+                    defaultValue={moment(new Date()).format("yyyy-MM-DD")}
+                    min={fromDate}
+                    type="date"
+                    onKeyDown={(e) => e.preventDefault()}
+                  />
                 </HStack>
               </VStack>
             </Flex>
@@ -226,69 +234,58 @@ const SyncModal = ({ isOpen, onClose, ymirPO = [], fetchData, setFetchData, from
                         </Tr>
                       </Thead>
                       <Tbody>
-                        {/* {ymirPO?.flatMap((data) =>
-                          data?.order?.map((subData, i) => (
-                            <Tr key={`${data?.po_year_number_id}-${i}`}>
-                              <Td color="gray.600">{i + 1}</Td>
-                              <Td color="gray.600">{data?.pr_transaction?.pr_year_number_id}</Td>
-                              <Td color="gray.600">{moment(subData?.pr_transaction?.created_at).format("yyyy-MM-DD")}</Td>
-                              <Td color="gray.600">{data?.po_year_number_id}</Td>
-                              <Td color="gray.600">{moment(subData?.po_transaction?.created_at).format("yyyy-MM-DD")}</Td>
-                              <Td color="gray.600">{subData?.item_code}</Td>
-                              <Td color="gray.600">{subData?.item_name}</Td>
-                              <Td color="gray.600">
-                                {subData?.quantity?.toLocaleString(undefined, {
-                                  minimumFractionDigits: 2,
-                                  maximumFractionDigi: 2,
-                                })}
-                              </Td>
-                              <Td color="gray.600">{`0.00`}</Td>
-                              <Td color="gray.600">{`0.00`}</Td>
-                              <Td color="gray.600">{subData?.uom?.name}</Td>
-                              <Td color="gray.600">
-                                {subData?.price?.toLocaleString(undefined, {
-                                  minimumFractionDigits: 2,
-                                  maximumFractionDigi: 2,
-                                })}
-                              </Td>
-                              <Td color="gray.600">{data?.supplier_name}</Td>
-                            </Tr>
-                          ))
-                        )} */}
+                        {fetchData ? (
+                          <Stack width="full">
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                            <Skeleton height="20px" />
+                          </Stack>
+                        ) : (
+                          <>
+                            {ymirResultArray?.map((d, i) => (
+                              <Tr key={i}>
+                                <Td color="gray.600">{i + 1}</Td>
+                                <Td color="gray.600">{d?.ymir_PR_Number}</Td>
+                                <Td color="gray.600">{moment(d?.pR_Date).format("yyyy-MM-DD")}</Td>
+                                <Td color="gray.600">{d?.ymir_PO_Number}</Td>
+                                <Td color="gray.600">{moment(d?.pO_Date).format("yyyy-MM-DD")}</Td>
+                                <Td color="gray.600">{d?.itemCode}</Td>
+                                <Td color="gray.600">{d?.itemDescription}</Td>
+                                <Td color="gray.600">
+                                  {d?.ordered?.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigi: 2,
+                                  })}
+                                </Td>
+                                <Td color="gray.600">
+                                  {d?.delivered?.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigi: 2,
+                                  })}
+                                </Td>
 
-                        {ymirResultArray?.map((d, i) => (
-                          <Tr key={i}>
-                            <Td color="gray.600">{i + 1}</Td>
-                            <Td color="gray.600">{d?.ymir_PR_Number}</Td>
-                            <Td color="gray.600">{moment(d?.pR_Date).format("yyyy-MM-DD")}</Td>
-                            <Td color="gray.600">{d?.ymir_PO_Number}</Td>
-                            <Td color="gray.600">{moment(d?.pO_Date).format("yyyy-MM-DD")}</Td>
-                            <Td color="gray.600">{d?.itemCode}</Td>
-                            <Td color="gray.600">{d?.itemDescription}</Td>
-                            <Td color="gray.600">
-                              {d?.ordered?.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigi: 2,
-                              })}
-                            </Td>
-                            <Td color="gray.600">
-                              {d?.delivered?.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigi: 2,
-                              })}
-                            </Td>
-
-                            <Td color="gray.600">{d?.billed}</Td>
-                            <Td color="gray.600">{d?.uom}</Td>
-                            <Td color="gray.600">
-                              {d?.unitPrice?.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigi: 2,
-                              })}
-                            </Td>
-                            <Td color="gray.600">{d?.vendorName}</Td>
-                          </Tr>
-                        ))}
+                                <Td color="gray.600">{d?.billed}</Td>
+                                <Td color="gray.600">{d?.uom}</Td>
+                                <Td color="gray.600">
+                                  {d?.unitPrice?.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigi: 2,
+                                  })}
+                                </Td>
+                                <Td color="gray.600">{d?.vendorName}</Td>
+                              </Tr>
+                            ))}
+                          </>
+                        )}
 
                         {!ymirResultArray?.length && (
                           <Tr>

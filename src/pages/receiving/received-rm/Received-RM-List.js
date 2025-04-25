@@ -54,25 +54,16 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import PageScroll from "../../../components/PageScroll";
 import PageScrollReusable from "../../../components/PageScroll-Reusable";
-import {
-  Pagination,
-  usePagination,
-  PaginationNext,
-  PaginationPage,
-  PaginationPrevious,
-  PaginationContainer,
-  PaginationPageGroup,
-} from "@ajna/pagination";
+import { Pagination, usePagination, PaginationNext, PaginationPage, PaginationPrevious, PaginationContainer, PaginationPageGroup } from "@ajna/pagination";
 import { FaSearch } from "react-icons/fa";
 import { AiFillPrinter } from "react-icons/ai";
 import { useReactToPrint } from "react-to-print";
 import Barcode from "react-barcode";
 import moment from "moment/moment";
+import useDebounce from "../../../hooks/useDebounce";
 
 const fetchWarehouseIdApi = async (search) => {
-  const res = await apiClient.get(
-    `Warehouse/GetAllListOfWarehouseReceivingId?search=${search}`
-  );
+  const res = await apiClient.get(`Warehouse/GetAllListOfWarehouseReceivingId?search=${search}`);
   return res.data;
 };
 
@@ -82,7 +73,8 @@ export const ReceivedRMList = () => {
 
   const [sheetData, setSheetData] = useState([]);
 
-  const [search, setSearch] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const search = useDebounce(searchValue, 700);
 
   const [printData, setPrintData] = useState({
     warehouseId: "",
@@ -104,9 +96,7 @@ export const ReceivedRMList = () => {
             "Item Description": item?.itemDescription,
             UOM: item?.uom,
             SOH: item?.soh,
-            "Expiry Date": moment(item?.expirationDate).format(
-              "ll"
-            ),
+            "Expiry Date": moment(item?.expirationDate).format("ll"),
           };
         })
       );
@@ -121,18 +111,8 @@ export const ReceivedRMList = () => {
     };
   }, [search]);
 
-  const {
-    isOpen: isPrint,
-    onClose: closePrint,
-    onOpen: openPrint,
-  } = useDisclosure();
-  const printHandler = ({
-    id,
-    itemCode,
-    itemDescription,
-    expirationDay,
-    expirationDate,
-  }) => {
+  const { isOpen: isPrint, onClose: closePrint, onOpen: openPrint } = useDisclosure();
+  const printHandler = ({ id, itemCode, itemDescription, expirationDay, expirationDate }) => {
     if (id) {
       setPrintData({
         warehouseId: id,
@@ -153,11 +133,7 @@ export const ReceivedRMList = () => {
     }
   };
 
-  const {
-    isOpen: isPrintAll,
-    onClose: closePrintAll,
-    onOpen: openPrintAll,
-  } = useDisclosure();
+  const { isOpen: isPrintAll, onClose: closePrintAll, onOpen: openPrintAll } = useDisclosure();
   const printBarcodeHandler = () => {
     if (warehouseIdData) {
       openPrintAll();
@@ -165,7 +141,7 @@ export const ReceivedRMList = () => {
   };
 
   const searchHandler = (data) => {
-    setSearch(data);
+    setSearchValue(data);
   };
 
   const handleExport = () => {
@@ -182,24 +158,10 @@ export const ReceivedRMList = () => {
       <Flex justifyContent="start" mb={3}>
         <HStack>
           <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              children={<FaSearch color="gray.300" />}
-            />
-            <Input
-              type="text"
-              placeholder="Search: Item Code"
-              onChange={(e) => searchHandler(e.target.value)}
-              focusBorderColor="accent"
-            />
+            <InputLeftElement pointerEvents="none" children={<FaSearch color="gray.300" />} />
+            <Input value={searchValue} type="text" placeholder="Search: Item Code" onChange={(e) => searchHandler(e.target.value)} focusBorderColor="accent" />
           </InputGroup>
-          <Button
-            onClick={handleExport}
-            disabled={!sheetData}
-            ml={2}
-            px={5}
-            _hover={{ bgColor: "accent" }}
-          >
+          <Button onClick={handleExport} disabled={!sheetData} ml={2} px={5} _hover={{ bgColor: "accent" }}>
             Export
           </Button>
         </HStack>
@@ -245,29 +207,13 @@ export const ReceivedRMList = () => {
                     <Td>{items.soh}</Td>
                     <Td>{items.receivingDate}</Td>
                     <Td>{items.actualGood}</Td>
-                    <Td>
-                      {moment(items.manufacturingDate).format("yyyy-MM-DD")}
-                    </Td>
-                    <Td
-                      color={items.expirationDay <= 0 ? "red" : ""}
-                      title={
-                        items.expirationDay <= 0
-                          ? "Expired"
-                          : `${items.expirationDay} days before expiration`
-                      }
-                      cursor="help"
-                    >
+                    <Td>{moment(items.manufacturingDate).format("yyyy-MM-DD")}</Td>
+                    <Td color={items.expirationDay <= 0 ? "red" : ""} title={items.expirationDay <= 0 ? "Expired" : `${items.expirationDay} days before expiration`} cursor="help">
                       {items.expirationDate}
                     </Td>
                     <Td>{items.expirationDay}</Td>
                     <Td>
-                      <Button
-                        onClick={() => printHandler(items)}
-                        p={0}
-                        background="none"
-                        color="secondary"
-                        title={`Print warehouse barcode for ${items.itemCode}`}
-                      >
+                      <Button onClick={() => printHandler(items)} p={0} background="none" color="secondary" title={`Print warehouse barcode for ${items.itemCode}`}>
                         <AiFillPrinter />
                       </Button>
                     </Td>
@@ -280,30 +226,13 @@ export const ReceivedRMList = () => {
       </PageScroll>
 
       <Flex justifyContent="start" mt={5}>
-        <Button
-          leftIcon={<IoMdBarcode color="white" />}
-          bgColor="secondary"
-          onClick={printBarcodeHandler}
-          _hover={{ bgColor: "accent" }}
-        >
+        <Button leftIcon={<IoMdBarcode color="white" />} bgColor="secondary" onClick={printBarcodeHandler} _hover={{ bgColor: "accent" }}>
           <Text color="white">Print all active barcode</Text>
         </Button>
 
-        {isPrint && (
-          <PrinterModal
-            isOpen={isPrint}
-            onClose={closePrint}
-            printData={printData}
-          />
-        )}
+        {isPrint && <PrinterModal isOpen={isPrint} onClose={closePrint} printData={printData} />}
 
-        {isPrintAll && (
-          <PrintAllBarcodeModal
-            isOpen={isPrintAll}
-            onClose={closePrintAll}
-            warehouseIdData={warehouseIdData}
-          />
-        )}
+        {isPrintAll && <PrintAllBarcodeModal isOpen={isPrintAll} onClose={closePrintAll} warehouseIdData={warehouseIdData} />}
       </Flex>
     </Flex>
   );
