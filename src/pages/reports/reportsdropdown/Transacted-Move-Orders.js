@@ -1,32 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  Flex,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-  Button,
-} from "@chakra-ui/react";
+import { Flex, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, Button } from "@chakra-ui/react";
 import apiClient from "../../../services/apiClient";
 import PageScrollReusable from "../../../components/PageScroll-Reusable";
 import moment from "moment";
 
 const fetchTransactedMoveOrdersApi = async (dateFrom, dateTo) => {
-  const res = await apiClient.get(
-    `Report/TransactedMoveOrderReport?dateFrom=${dateFrom}&dateTo=${dateTo}`
-  );
+  const res = await apiClient.get(`Report/TransactedMoveOrderReport?dateFrom=${dateFrom}&dateTo=${dateTo}`);
   return res.data;
 };
 
-export const TransactedMoveOrders = ({
-  dateFrom,
-  dateTo,
-  sample,
-  setSheetData,
-}) => {
+export const TransactedMoveOrders = ({ dateFrom, dateTo, sample, setSheetData }) => {
   const [tmoData, setTMOData] = useState([]);
   // const [buttonChanger, setButtonChanger] = useState(true)
 
@@ -43,19 +26,13 @@ export const TransactedMoveOrders = ({
             "Item Code": item.itemCode,
             "Item Description": item.itemDescription,
             UOM: item.uom,
-            "Item Remarks": item.orderRemarks ? item.orderRemarks : "-",
+            Remarks: item.orderRemarks ? item.orderRemarks : "-",
             "Total Quantity": item.quantity,
             "Batch Number": item.batchNo,
             "Transaction Type": item.transactionType,
-            "Move Order Date": item.moveOrderDate
-              ? moment(item.moveOrderDate).format("yyyy-MM-DD")
-              : "",
-            "Delivery Date": item.deliveryDate
-              ? moment(item.deliveryDate).format("yyyy-MM-DD")
-              : "",
-            "Transaction Date": item.transactedDate
-              ? moment(item.transactedDate).format("yyyy-MM-DD")
-              : "",
+            "Move Order Date": item.moveOrderDate ? moment(item.moveOrderDate).format("yyyy-MM-DD") : "",
+            "Delivery Date": item.deliveryDate ? moment(item.deliveryDate).format("yyyy-MM-DD") : "",
+            "Transaction Date": item.transactedDate ? moment(item.transactedDate).format("yyyy-MM-DD") : "",
             "Transacted By": item.transactedBy,
           };
         })
@@ -84,7 +61,7 @@ export const TransactedMoveOrders = ({
                 <Th color="white">Item Code</Th>
                 <Th color="white">Item Description</Th>
                 <Th color="white">UOM</Th>
-                <Th color="white">Item Remarks</Th>
+                <Th color="white">Remarks</Th>
                 <Th color="white">Total Quantity</Th>
                 <Th color="white">Batch Number</Th>
                 <Th color="white">Transaction Type</Th>
@@ -107,21 +84,9 @@ export const TransactedMoveOrders = ({
                   <Td>{item.quantity}</Td>
                   <Td>{item.batchNo}</Td>
                   <Td>{item.transactionType}</Td>
-                  <Td>
-                    {item.moveOrderDate
-                      ? moment(item.moveOrderDate).format("yyyy-MM-DD")
-                      : ""}
-                  </Td>
-                  <Td>
-                    {item.deliveryDate
-                      ? moment(item.deliveryDate).format("yyyy-MM-DD")
-                      : ""}
-                  </Td>
-                  <Td>
-                    {item.transactedDate
-                      ? moment(item.transactedDate).format("yyyy-MM-DD")
-                      : ""}
-                  </Td>
+                  <Td>{item.moveOrderDate ? moment(item.moveOrderDate).format("yyyy-MM-DD") : ""}</Td>
+                  <Td>{item.deliveryDate ? moment(item.deliveryDate).format("yyyy-MM-DD") : ""}</Td>
+                  <Td>{item.transactedDate ? moment(item.transactedDate).format("yyyy-MM-DD") : ""}</Td>
                   <Td>{item.transactedBy}</Td>
                 </Tr>
               ))}

@@ -36,14 +36,7 @@ import Barcode from "react-barcode";
 const currentUser = decodeUser();
 
 export const ViewModal = ({ isOpen, onClose, viewData }) => {
-  const TableHeads = [
-    "Line",
-    "Barcode",
-    "Item Code",
-    "Item Description",
-    "Quantity",
-    "Expiration Date",
-  ];
+  const TableHeads = ["Line", "Barcode", "Item Code", "Item Description", "Quantity", "Remarks", "Expiration Date"];
 
   return (
     <Modal isOpen={isOpen} onClose={() => {}} isCentered size="4xl">
@@ -76,6 +69,7 @@ export const ViewModal = ({ isOpen, onClose, viewData }) => {
                       <Td>{item.itemCode}</Td>
                       <Td>{item.itemDescription}</Td>
                       <Td>{item.quantity}</Td>
+                      <Td>{item.orderRemarks ? item.orderRemarks : "-"}</Td>
                       <Td>{moment(item.expiration).format("MM/DD/yyyy")}</Td>
                     </Tr>
                   ))}
@@ -97,15 +91,7 @@ export const ViewModal = ({ isOpen, onClose, viewData }) => {
   );
 };
 
-export const ApproveModal = ({
-  isOpen,
-  onClose,
-  orderNo,
-  fetchForApprovalMO,
-  printData,
-  fetchNotification,
-  totalQuantity,
-}) => {
+export const ApproveModal = ({ isOpen, onClose, orderNo, fetchForApprovalMO, printData, fetchNotification, totalQuantity }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const componentRef = useRef();
@@ -117,11 +103,7 @@ export const ApproveModal = ({
   const dateToday = new Date();
 
   const toast = useToast();
-  const {
-    isOpen: isPrint,
-    onClose: closePrint,
-    onOpen: openPrint,
-  } = useDisclosure();
+  const { isOpen: isPrint, onClose: closePrint, onOpen: openPrint } = useDisclosure();
 
   const submitHandler = () => {
     setIsLoading(true);
@@ -129,12 +111,7 @@ export const ApproveModal = ({
       const res = apiClient
         .put(`Ordering/ApproveListOfMoveOrder`, { orderNo: orderNo })
         .then((res) => {
-          ToastComponent(
-            "Success",
-            "Move order has been approved",
-            "success",
-            toast
-          );
+          ToastComponent("Success", "Move order has been approved", "success", toast);
           fetchNotification();
           fetchForApprovalMO();
           try {
@@ -149,12 +126,7 @@ export const ApproveModal = ({
           } catch (error) {}
         })
         .catch((jaypee) => {
-          ToastComponent(
-            "Error",
-            "Move order was not approved",
-            "error",
-            toast
-          );
+          ToastComponent("Error", "Move order was not approved", "error", toast);
           setIsLoading(false);
         });
     } catch (error) {}
@@ -179,20 +151,10 @@ export const ApproveModal = ({
 
           <ModalFooter>
             <ButtonGroup size="sm" mt={7}>
-              <Button
-                onClick={submitHandler}
-                isLoading={isLoading}
-                disabled={isLoading}
-                colorScheme="blue"
-              >
+              <Button onClick={submitHandler} isLoading={isLoading} disabled={isLoading} colorScheme="blue">
                 Yes
               </Button>
-              <Button
-                onClick={onClose}
-                isLoading={isLoading}
-                disabled={isLoading}
-                colorScheme="red"
-              >
+              <Button onClick={onClose} isLoading={isLoading} disabled={isLoading} colorScheme="red">
                 No
               </Button>
             </ButtonGroup>
@@ -221,148 +183,54 @@ export const ApproveModal = ({
                 <Image src="/images/RDF Logo.png" w="18%" ml={3} />
 
                 <VStack mt={5} spacing={0} w="full">
-                  <Text
-                    fontWeight="semibold"
-                    fontSize="md"
-                    textAlign="center"
-                    w="full"
-                    borderLeft="1px"
-                    borderBottom="1px"
-                  >
+                  <Text fontWeight="semibold" fontSize="md" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                     Form
                   </Text>
-                  <Text
-                    fontWeight="semibold"
-                    fontSize="lg"
-                    textAlign="center"
-                    w="full"
-                    borderLeft="1px"
-                    borderBottom="1px"
-                  >
+                  <Text fontWeight="semibold" fontSize="lg" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                     Customer Survey
                   </Text>
                   <Flex w="full" justifyContent="space-between">
                     <VStack w="full" spacing={0}>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                        borderBottom="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                         Control No.
                       </Text>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                        borderBottom="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                         Owner
                       </Text>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px">
                         Effectivity
                       </Text>
                     </VStack>
                     <VStack w="full" spacing={0}>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                        borderBottom="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                         FM-FRM-22-001
                       </Text>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                        borderBottom="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                         PC
                       </Text>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px">
                         &nbsp;
                       </Text>
                     </VStack>
                     <VStack w="full" spacing={0}>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                        borderBottom="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                         Supersedes
                       </Text>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                        borderBottom="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                         Revision No.
                       </Text>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px">
                         Page
                       </Text>
                     </VStack>
                     <VStack w="full" spacing={0}>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                        borderBottom="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                         None
                       </Text>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                        borderBottom="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px" borderBottom="1px">
                         0
                       </Text>
-                      <Text
-                        fontWeight="semibold"
-                        fontSize="xs"
-                        textAlign="center"
-                        w="full"
-                        borderLeft="1px"
-                      >
+                      <Text fontWeight="semibold" fontSize="xs" textAlign="center" w="full" borderLeft="1px">
                         1
                       </Text>
                     </VStack>
@@ -389,10 +257,7 @@ export const ApproveModal = ({
                       Service Level
                     </Th>
                     <Th></Th>
-                    <Th
-                      textAlign="center"
-                      borderX="1px"
-                    >{`Score (Bilugan ang Score)`}</Th>
+                    <Th textAlign="center" borderX="1px">{`Score (Bilugan ang Score)`}</Th>
                     <Th textAlign="center">Remarks/comments/suggestion</Th>
                   </Tr>
                 </Thead>
@@ -401,11 +266,7 @@ export const ApproveModal = ({
                     <Td fontSize="xs" textAlign="center" borderRight="1px">
                       Quantity Issue
                     </Td>
-                    <Td
-                      fontSize="xs"
-                      textAlign="center"
-                      borderRight="1px"
-                    >{`(nauubusan ba ng stock ang customer?)`}</Td>
+                    <Td fontSize="xs" textAlign="center" borderRight="1px">{`(nauubusan ba ng stock ang customer?)`}</Td>
                     <Td fontSize="sm" textAlign="center" borderRight="1px">
                       1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3
                     </Td>
@@ -415,11 +276,7 @@ export const ApproveModal = ({
                     <Td fontSize="xs" textAlign="center" borderRight="1px">
                       Quality Issue
                     </Td>
-                    <Td
-                      fontSize="xs"
-                      textAlign="center"
-                      borderRight="1px"
-                    >{`(kalidad ng trabaho/gawa)`}</Td>
+                    <Td fontSize="xs" textAlign="center" borderRight="1px">{`(kalidad ng trabaho/gawa)`}</Td>
                     <Td fontSize="sm" textAlign="center" borderRight="1px">
                       1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3
                     </Td>
@@ -429,11 +286,7 @@ export const ApproveModal = ({
                     <Td fontSize="xs" textAlign="center" borderRight="1px">
                       Customer Service
                     </Td>
-                    <Td
-                      fontSize="xs"
-                      textAlign="center"
-                      borderRight="1px"
-                    >{`(pakikitungo sa customer)`}</Td>
+                    <Td fontSize="xs" textAlign="center" borderRight="1px">{`(pakikitungo sa customer)`}</Td>
                     <Td fontSize="sm" textAlign="center" borderRight="1px">
                       1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3
                     </Td>
@@ -444,11 +297,7 @@ export const ApproveModal = ({
                       Other Issue <br />
                       {`(ano pa ang problema na hindi nabanggit sa itaas?)`}
                     </Td>
-                    <Td
-                      fontSize="xs"
-                      textAlign="center"
-                      borderRight="1px"
-                    >{`(nauubusan ba ng stock ang customer?)`}</Td>
+                    <Td fontSize="xs" textAlign="center" borderRight="1px">{`(nauubusan ba ng stock ang customer?)`}</Td>
                     <Td fontSize="sm" textAlign="center" borderRight="1px">
                       1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3
                     </Td>
@@ -465,18 +314,11 @@ export const ApproveModal = ({
             </Flex>
 
             {/* MO Slip */}
-            <Flex
-              w="full"
-              mt={2}
-              p={5}
-              flexDirection="column"
-              ref={componentRef}
-            >
+            <Flex w="full" mt={2} p={5} flexDirection="column" ref={componentRef}>
               <Flex spacing={0} justifyContent="start" flexDirection="column">
                 <Image src="/images/RDF Logo.png" w="13%" ml={3} />
                 <Text fontSize="8px" ml={2}>
-                  Purok 6, Brgy. Lara, City of San Fernando, Pampanga,
-                  Philippines
+                  Purok 6, Brgy. Lara, City of San Fernando, Pampanga, Philippines
                 </Text>
               </Flex>
 
@@ -507,7 +349,7 @@ export const ApproveModal = ({
                     <Th color="white">ITEM DESCRIPTION</Th>
                     <Th color="white">UOM</Th>
                     <Th color="white">QUANTITY</Th>
-                    <Th color="white">ITEM REMARKS</Th>
+                    <Th color="white">REMARKS</Th>
                     <Th color="white">ACTUAL QTY RECEIVED</Th>
                     <Th color="white">EXPIRATION DATE</Th>
                   </Tr>
@@ -535,24 +377,17 @@ export const ApproveModal = ({
                 <HStack>
                   <Text>Delivery Status:</Text>
                   <Text textDecoration="underline">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {printData[0]?.deliveryStatus}
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   </Text>
                 </HStack>
                 <VStack spacing={0}>
                   <HStack>
                     <Text>Checked By:</Text>
                     <Text textDecoration="underline">
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Text>
                   </HStack>
@@ -570,12 +405,8 @@ export const ApproveModal = ({
                   <HStack>
                     <Text>Prepared By:</Text>
                     <Text textDecoration="underline">
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Text>
                   </HStack>
@@ -590,12 +421,8 @@ export const ApproveModal = ({
                   <HStack>
                     <Text>Received By:</Text>
                     <Text textDecoration="underline">
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Text>
                   </HStack>
@@ -621,13 +448,7 @@ export const ApproveModal = ({
   );
 };
 
-export const RejectModal = ({
-  isOpen,
-  onClose,
-  id,
-  fetchForApprovalMO,
-  fetchNotification,
-}) => {
+export const RejectModal = ({ isOpen, onClose, id, fetchForApprovalMO, fetchNotification }) => {
   const [reasonSubmit, setReasonSubmit] = useState("");
 
   const [reasons, setReasons] = useState([]);
@@ -664,24 +485,14 @@ export const RejectModal = ({
           rejectBy: currentUser?.fullName,
         })
         .then((res) => {
-          ToastComponent(
-            "Success",
-            "Move order has been rejected",
-            "success",
-            toast
-          );
+          ToastComponent("Success", "Move order has been rejected", "success", toast);
           fetchNotification();
           fetchForApprovalMO();
           setIsLoading(false);
           onClose();
         })
         .catch((err) => {
-          ToastComponent(
-            "Error",
-            "Move order was not rejected",
-            "error",
-            toast
-          );
+          ToastComponent("Error", "Move order was not rejected", "error", toast);
           setIsLoading(false);
         });
     } catch (error) {}
@@ -701,11 +512,7 @@ export const RejectModal = ({
           <VStack justifyContent="center">
             <Text>Are you sure you want to reject this move order?</Text>
             {reasons?.length > 0 ? (
-              <Select
-                onChange={(e) => setReasonSubmit(e.target.value)}
-                w="70%"
-                placeholder="Please select a reason"
-              >
+              <Select onChange={(e) => setReasonSubmit(e.target.value)} w="70%" placeholder="Please select a reason">
                 {reasons?.map((reason, i) => (
                   <option key={i} value={reason.reasonName}>
                     {reason.reasonName}
@@ -720,20 +527,10 @@ export const RejectModal = ({
 
         <ModalFooter>
           <ButtonGroup size="sm" mt={7}>
-            <Button
-              onClick={submitHandler}
-              disabled={!reasonSubmit || isLoading}
-              isLoading={isLoading}
-              colorScheme="blue"
-            >
+            <Button onClick={submitHandler} disabled={!reasonSubmit || isLoading} isLoading={isLoading} colorScheme="blue">
               Yes
             </Button>
-            <Button
-              onClick={onClose}
-              disabled={isLoading}
-              isLoading={isLoading}
-              colorScheme="red"
-            >
+            <Button onClick={onClose} disabled={isLoading} isLoading={isLoading} colorScheme="red">
               No
             </Button>
           </ButtonGroup>

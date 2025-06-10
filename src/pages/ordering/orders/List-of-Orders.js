@@ -90,7 +90,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
             <DatePicker
               onChange={(date) => setFromDate(date)}
               selected={fromDate}
-              // minDate={startDate}
+              minDate={startDate}
               shouldCloseOnSelect
               dateFormat="yyyy-MM-dd"
               onKeyDown={(e) => e.preventDefault()}
@@ -99,7 +99,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
             <DatePicker
               onChange={(date) => setToDate(date)}
               selected={toDate}
-              // minDate={fromDate}
+              minDate={fromDate}
               shouldCloseOnSelect
               dateFormat="yyyy-MM-dd"
               onKeyDown={(e) => e.preventDefault()}
@@ -149,7 +149,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
                 </Stack>
               ) : (
                 <Table size="sm">
-                  <Thead bgColor="secondary">
+                  <Thead bgColor="secondary" position="sticky" top={0} zIndex={1}>
                     <Tr>
                       <Th color="white">Line</Th>
                       <Th color="white">Order Date</Th>
@@ -161,6 +161,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
                       <Th color="white">Category</Th>
                       <Th color="white">UOM</Th>
                       <Th color="white">Quantity Order</Th>
+                      <Th color="white">Remarks</Th>
                     </Tr>
                   </Thead>
 
@@ -183,6 +184,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
                             <Td>{order.order_details.order.category}</Td>
                             <Td>{order.order_details.order.uom}</Td>
                             <Td>{order.order_details.order.quantity}</Td>
+                            <Td>{order.order_details.order.remarks ? order.order_details.order.remarks : "-"}</Td>
                           </Tr>
                         ))}
                     </Tbody>
@@ -205,6 +207,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
                             <Td>{order.order_details.order.category}</Td>
                             <Td>{order.order_details.order.uom}</Td>
                             <Td>{order.order_details.order.quantity}</Td>
+                            <Td>{order.order_details.order.remarks ? order.order_details.order.remarks : "-"}</Td>
                           </Tr>
                         ))}
                     </Tbody>

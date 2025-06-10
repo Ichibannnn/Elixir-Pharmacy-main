@@ -13,19 +13,19 @@ const user = decodeUser();
 // });
 
 // KEIGH BACKEND
-// export default axios.create({
-//   baseURL: "https://10.10.10.14:6001/api/",
-//   headers: {
-//     "Content-Type": "application/json",
-//     Authorization: "Bearer " + user?.token,
-//   },
-// });
-
-// LIVE
 export default axios.create({
-  baseURL: "http://10.10.2.31:82/api/",
+  baseURL: "https://10.10.10.14:6001/api/",
   headers: {
     "Content-Type": "application/json",
     Authorization: "Bearer " + user?.token,
   },
 });
+
+// LIVE
+// export default axios.create({
+//   baseURL: "http://10.10.2.31:82/api/",
+//   headers: {
+//     "Content-Type": "application/json",
+//     Authorization: "Bearer " + user?.token,
+//   },
+// });

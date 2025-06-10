@@ -32,18 +32,8 @@ import PageScrollModalErrorList from "../../../components/PageScrollErrorList";
 import moment from "moment";
 import { ConfirmFiltteredModal } from "./Confirm-Filttered-Modal";
 
-export const ErrorModal = ({
-  isOpen,
-  onClose,
-  errorData,
-  isLoading,
-  fetchNotification,
-}) => {
-  const {
-    isOpen: isConfirm,
-    onClose: closeConfirm,
-    onOpen: openConfirm,
-  } = useDisclosure();
+export const ErrorModal = ({ isOpen, onClose, errorData, isLoading, fetchNotification }) => {
+  const { isOpen: isConfirm, onClose: closeConfirm, onOpen: openConfirm } = useDisclosure();
 
   const duplicateList = errorData?.duplicateList?.map((list) => {
     return {
@@ -57,6 +47,7 @@ export const ErrorModal = ({
       itemDescription: list.itemDescription,
       uom: list.uom,
       quantity: list.quantityOrdered,
+      orderRemarks: list?.orderRemarks,
     };
   });
 
@@ -106,6 +97,7 @@ export const ErrorModal = ({
       itemDescription: list.itemDescription,
       uom: list.uom,
       quantity: list.quantityOrdered,
+      orderRemarks: list?.orderRemarks,
     };
   });
 
@@ -121,6 +113,7 @@ export const ErrorModal = ({
       itemDescription: list.itemDescription,
       uom: list.uom,
       quantity: list.quantityOrdered,
+      orderRemarks: list?.orderRemarks,
     };
   });
 
@@ -136,6 +129,7 @@ export const ErrorModal = ({
       itemDescription: list.itemDescription,
       uom: list.uom,
       quantity: list.quantityOrdered,
+      orderRemarks: list?.orderRemarks,
     };
   });
 
@@ -151,6 +145,7 @@ export const ErrorModal = ({
       itemDescription: list.itemDescription,
       uom: list.uom,
       quantity: list.quantityOrdered,
+      orderRemarks: list?.orderRemarks,
     };
   });
 
@@ -166,6 +161,7 @@ export const ErrorModal = ({
       itemDescription: list.itemDescription,
       uom: list.uom,
       quantity: list.quantityOrdered,
+      orderRemarks: list?.orderRemarks,
     };
   });
 
@@ -181,6 +177,7 @@ export const ErrorModal = ({
       itemDescription: list.itemDescription,
       uom: list.uom,
       quantity: list.quantityOrdered,
+      orderRemarks: list?.orderRemarks,
     };
   });
 
@@ -196,6 +193,7 @@ export const ErrorModal = ({
       itemDescription: list.itemDescription,
       uom: list.uom,
       quantity: list.quantityOrdered,
+      orderRemarks: list?.orderRemarks,
     };
   });
 
@@ -232,9 +230,7 @@ export const ErrorModal = ({
         <ModalHeader>
           <CgDanger fontSize="30px" color="red" />
           <Flex justifyContent="center">
-            <Text fontSize="md">
-              Orders were not synced due to the following reasons:
-            </Text>
+            <Text fontSize="md">Orders were not synced due to the following reasons:</Text>
           </Flex>
         </ModalHeader>
         <ModalCloseButton onClick={onClose} />
@@ -246,14 +242,8 @@ export const ErrorModal = ({
                 <AccordionItem bgColor="gray.200">
                   <Flex>
                     <AccordionButton color="white" fontWeight="semibold">
-                      <Box
-                        flex="1"
-                        textAlign="center"
-                        color="secondary"
-                        fontWeight="semibold"
-                      >
-                        Duplicated Lists{" "}
-                        <Badge color="danger">{duplicateList?.length}</Badge>
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        Duplicated Lists <Badge color="danger">{duplicateList?.length}</Badge>
                       </Box>
                       <AccordionIcon color="secondary" />
                     </AccordionButton>
@@ -275,6 +265,7 @@ export const ErrorModal = ({
                               <Th color="white">Item Description</Th>
                               <Th color="white">UOM</Th>
                               <Th color="white">Quantity Order</Th>
+                              <Th color="white">Remarks</Th>
                             </Tr>
                           </Thead>
 
@@ -282,12 +273,8 @@ export const ErrorModal = ({
                             {duplicateList?.map((d, i) => (
                               <Tr key={i}>
                                 <Td>{i + 1}</Td>
-                                <Td>
-                                  {moment(d?.orderDate).format("yyyy-MM-DD")}
-                                </Td>
-                                <Td>
-                                  {moment(d?.dateNeeded).format("yyyy-MM-DD")}
-                                </Td>
+                                <Td>{moment(d?.orderDate).format("yyyy-MM-DD")}</Td>
+                                <Td>{moment(d?.dateNeeded).format("yyyy-MM-DD")}</Td>
                                 <Td>{d?.farmCode}</Td>
                                 <Td>{d?.farmName}</Td>
                                 <Td>{d?.category}</Td>
@@ -295,6 +282,7 @@ export const ErrorModal = ({
                                 <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.uom}</Td>
                                 <Td>{d?.quantity}</Td>
+                                <Td>{d?.orderRemarks ? d?.orderRemarks : "-"}</Td>
                               </Tr>
                             ))}
                           </Tbody>
@@ -303,9 +291,7 @@ export const ErrorModal = ({
                         <Flex justifyContent="center" mt="30px">
                           <VStack>
                             <RiFileList3Fill fontSize="200px" />
-                            <Text color="white">
-                              There are no duplicated lists on this file
-                            </Text>
+                            <Text color="white">There are no duplicated lists on this file</Text>
                           </VStack>
                         </Flex>
                       )}
@@ -319,14 +305,8 @@ export const ErrorModal = ({
                 <AccordionItem bgColor="success">
                   <Flex>
                     <AccordionButton color="white" fontWeight="semibold">
-                      <Box
-                        flex="1"
-                        textAlign="center"
-                        color="secondary"
-                        fontWeight="semibold"
-                      >
-                        Available for syncing{" "}
-                        <Badge color="success">{filteredOrders?.length}</Badge>
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        Available for syncing <Badge color="success">{filteredOrders?.length}</Badge>
                       </Box>
                       <AccordionIcon color="secondary" />
                     </AccordionButton>
@@ -348,6 +328,7 @@ export const ErrorModal = ({
                               <Th color="white">Item Description</Th>
                               <Th color="white">UOM</Th>
                               <Th color="white">Quantity Order</Th>
+                              <Th color="white">Remarks</Th>
                             </Tr>
                           </Thead>
 
@@ -355,12 +336,8 @@ export const ErrorModal = ({
                             {filteredOrders?.map((d, i) => (
                               <Tr key={i}>
                                 <Td>{i + 1}</Td>
-                                <Td>
-                                  {moment(d?.orderDate).format("yyyy-MM-DD")}
-                                </Td>
-                                <Td>
-                                  {moment(d?.dateNeeded).format("yyyy-MM-DD")}
-                                </Td>
+                                <Td>{moment(d?.orderDate).format("yyyy-MM-DD")}</Td>
+                                <Td>{moment(d?.dateNeeded).format("yyyy-MM-DD")}</Td>
                                 <Td>{d?.farmCode}</Td>
                                 <Td>{d?.farmName}</Td>
                                 <Td>{d?.category}</Td>
@@ -368,6 +345,7 @@ export const ErrorModal = ({
                                 <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.uom}</Td>
                                 <Td>{d?.quantityOrdered}</Td>
+                                <Td>{d?.orderRemarks ? d?.orderRemarks : "-"}</Td>
                               </Tr>
                             ))}
                           </Tbody>
@@ -376,21 +354,14 @@ export const ErrorModal = ({
                         <Flex justifyContent="center" mt="30px">
                           <VStack>
                             <RiFileList3Fill fontSize="200px" />
-                            <Text color="white">
-                              There are no duplicated lists on this file
-                            </Text>
+                            <Text color="white">There are no duplicated lists on this file</Text>
                           </VStack>
                         </Flex>
                       )}
                     </PageScrollModalErrorList>
                     {filteredOrders ? (
                       <Flex justifyContent="end">
-                        <Button
-                          onClick={() => syncManager()}
-                          size="sm"
-                          _hover={{ bgColor: "accent", color: "white" }}
-                          colorScheme="blue"
-                        >
+                        <Button onClick={() => syncManager()} size="sm" _hover={{ bgColor: "accent", color: "white" }} colorScheme="blue">
                           Sync
                         </Button>
                       </Flex>
@@ -406,14 +377,8 @@ export const ErrorModal = ({
                 <AccordionItem bgColor="gray.200">
                   <Flex>
                     <AccordionButton color="white" fontWeight="semibold">
-                      <Box
-                        flex="1"
-                        textAlign="center"
-                        color="secondary"
-                        fontWeight="semibold"
-                      >
-                        Invalid Date List{" "}
-                        <Badge color="danger">{invaliddatelist?.length}</Badge>
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        Invalid Date List <Badge color="danger">{invaliddatelist?.length}</Badge>
                       </Box>
                       <AccordionIcon color="secondary" />
                     </AccordionButton>
@@ -435,6 +400,7 @@ export const ErrorModal = ({
                               <Th color="white">Item Description</Th>
                               <Th color="white">UOM</Th>
                               <Th color="white">Quantity Order</Th>
+                              <Th color="white">Remarks</Th>
                             </Tr>
                           </Thead>
 
@@ -442,12 +408,8 @@ export const ErrorModal = ({
                             {invaliddatelist?.map((d, i) => (
                               <Tr key={i}>
                                 <Td>{i + 1}</Td>
-                                <Td>
-                                  {moment(d?.orderDate).format("yyyy-MM-DD")}
-                                </Td>
-                                <Td>
-                                  {moment(d?.dateNeeded).format("yyyy-MM-DD")}
-                                </Td>
+                                <Td>{moment(d?.orderDate).format("yyyy-MM-DD")}</Td>
+                                <Td>{moment(d?.dateNeeded).format("yyyy-MM-DD")}</Td>
                                 <Td>{d?.farmCode}</Td>
                                 <Td>{d?.farmName}</Td>
                                 <Td>{d?.category}</Td>
@@ -455,6 +417,7 @@ export const ErrorModal = ({
                                 <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.uom}</Td>
                                 <Td>{d?.quantity}</Td>
+                                <Td>{d?.orderRemarks ? d?.orderRemarks : "-"}</Td>
                               </Tr>
                             ))}
                           </Tbody>
@@ -463,9 +426,7 @@ export const ErrorModal = ({
                         <Flex justifyContent="center" mt="30px">
                           <VStack>
                             <RiFileList3Fill fontSize="200px" />
-                            <Text color="white">
-                              There are no duplicated lists on this file
-                            </Text>
+                            <Text color="white">There are no duplicated lists on this file</Text>
                           </VStack>
                         </Flex>
                       )}
@@ -479,14 +440,8 @@ export const ErrorModal = ({
                 <AccordionItem bgColor="gray.200">
                   <Flex>
                     <AccordionButton color="white" fontWeight="semibold">
-                      <Box
-                        flex="1"
-                        textAlign="center"
-                        color="secondary"
-                        fontWeight="semibold"
-                      >
-                        Customer Does Not Exist{" "}
-                        <Badge color="danger">{notExistCustomer?.length}</Badge>
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        Customer Does Not Exist <Badge color="danger">{notExistCustomer?.length}</Badge>
                       </Box>
                       <AccordionIcon color="secondary" />
                     </AccordionButton>
@@ -508,6 +463,7 @@ export const ErrorModal = ({
                               <Th color="white">Item Description</Th>
                               <Th color="white">UOM</Th>
                               <Th color="white">Quantity Order</Th>
+                              <Th color="white">Remarks</Th>
                             </Tr>
                           </Thead>
 
@@ -515,12 +471,8 @@ export const ErrorModal = ({
                             {notExistCustomer?.map((d, i) => (
                               <Tr key={i}>
                                 <Td>{i + 1}</Td>
-                                <Td>
-                                  {moment(d?.orderDate).format("yyyy-MM-DD")}
-                                </Td>
-                                <Td>
-                                  {moment(d?.dateNeeded).format("yyyy-MM-DD")}
-                                </Td>
+                                <Td>{moment(d?.orderDate).format("yyyy-MM-DD")}</Td>
+                                <Td>{moment(d?.dateNeeded).format("yyyy-MM-DD")}</Td>
                                 <Td>{d?.farmCode}</Td>
                                 <Td>{d?.farmName}</Td>
                                 <Td>{d?.category}</Td>
@@ -528,6 +480,7 @@ export const ErrorModal = ({
                                 <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.uom}</Td>
                                 <Td>{d?.quantity}</Td>
+                                <Td>{d?.orderRemarks ? d?.orderRemarks : "-"}</Td>
                               </Tr>
                             ))}
                           </Tbody>
@@ -536,9 +489,7 @@ export const ErrorModal = ({
                         <Flex justifyContent="center" mt="30px">
                           <VStack>
                             <RiFileList3Fill fontSize="200px" />
-                            <Text color="white">
-                              There are no duplicated lists on this file
-                            </Text>
+                            <Text color="white">There are no duplicated lists on this file</Text>
                           </VStack>
                         </Flex>
                       )}
@@ -552,14 +503,8 @@ export const ErrorModal = ({
                 <AccordionItem bgColor="gray.200">
                   <Flex>
                     <AccordionButton color="white" fontWeight="semibold">
-                      <Box
-                        flex="1"
-                        textAlign="center"
-                        color="secondary"
-                        fontWeight="semibold"
-                      >
-                        Customer Code Does Not Exist{" "}
-                        <Badge color="danger">{notExistFarmCode?.length}</Badge>
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        Customer Code Does Not Exist <Badge color="danger">{notExistFarmCode?.length}</Badge>
                       </Box>
                       <AccordionIcon color="secondary" />
                     </AccordionButton>
@@ -581,6 +526,7 @@ export const ErrorModal = ({
                               <Th color="white">Item Description</Th>
                               <Th color="white">UOM</Th>
                               <Th color="white">Quantity Order</Th>
+                              <Th color="white">Remarks</Th>
                             </Tr>
                           </Thead>
 
@@ -588,12 +534,8 @@ export const ErrorModal = ({
                             {notExistFarmCode?.map((d, i) => (
                               <Tr key={i}>
                                 <Td>{i + 1}</Td>
-                                <Td>
-                                  {moment(d?.orderDate).format("yyyy-MM-DD")}
-                                </Td>
-                                <Td>
-                                  {moment(d?.dateNeeded).format("yyyy-MM-DD")}
-                                </Td>
+                                <Td>{moment(d?.orderDate).format("yyyy-MM-DD")}</Td>
+                                <Td>{moment(d?.dateNeeded).format("yyyy-MM-DD")}</Td>
                                 <Td>{d?.farmCode}</Td>
                                 <Td>{d?.farmName}</Td>
                                 <Td>{d?.category}</Td>
@@ -601,6 +543,7 @@ export const ErrorModal = ({
                                 <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.uom}</Td>
                                 <Td>{d?.quantity}</Td>
+                                <Td>{d?.orderRemarks ? d?.orderRemarks : "-"}</Td>
                               </Tr>
                             ))}
                           </Tbody>
@@ -609,9 +552,7 @@ export const ErrorModal = ({
                         <Flex justifyContent="center" mt="30px">
                           <VStack>
                             <RiFileList3Fill fontSize="200px" />
-                            <Text color="white">
-                              There are no duplicated lists on this file
-                            </Text>
+                            <Text color="white">There are no duplicated lists on this file</Text>
                           </VStack>
                         </Flex>
                       )}
@@ -625,14 +566,8 @@ export const ErrorModal = ({
                 <AccordionItem bgColor="gray.200">
                   <Flex>
                     <AccordionButton color="white" fontWeight="semibold">
-                      <Box
-                        flex="1"
-                        textAlign="center"
-                        color="secondary"
-                        fontWeight="semibold"
-                      >
-                        Customer Name Does Not Exist{" "}
-                        <Badge color="danger">{notExistFarmName?.length}</Badge>
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        Customer Name Does Not Exist <Badge color="danger">{notExistFarmName?.length}</Badge>
                       </Box>
                       <AccordionIcon color="secondary" />
                     </AccordionButton>
@@ -654,6 +589,7 @@ export const ErrorModal = ({
                               <Th color="white">Item Description</Th>
                               <Th color="white">UOM</Th>
                               <Th color="white">Quantity Order</Th>
+                              <Th color="white">Remarks</Th>
                             </Tr>
                           </Thead>
 
@@ -661,12 +597,8 @@ export const ErrorModal = ({
                             {notExistFarmName?.map((d, i) => (
                               <Tr key={i}>
                                 <Td>{i + 1}</Td>
-                                <Td>
-                                  {moment(d?.orderDate).format("yyyy-MM-DD")}
-                                </Td>
-                                <Td>
-                                  {moment(d?.dateNeeded).format("yyyy-MM-DD")}
-                                </Td>
+                                <Td>{moment(d?.orderDate).format("yyyy-MM-DD")}</Td>
+                                <Td>{moment(d?.dateNeeded).format("yyyy-MM-DD")}</Td>
                                 <Td>{d?.farmCode}</Td>
                                 <Td>{d?.farmName}</Td>
                                 <Td>{d?.category}</Td>
@@ -674,6 +606,7 @@ export const ErrorModal = ({
                                 <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.uom}</Td>
                                 <Td>{d?.quantity}</Td>
+                                <Td>{d?.orderRemarks ? d?.orderRemarks : "-"}</Td>
                               </Tr>
                             ))}
                           </Tbody>
@@ -682,9 +615,7 @@ export const ErrorModal = ({
                         <Flex justifyContent="center" mt="30px">
                           <VStack>
                             <RiFileList3Fill fontSize="200px" />
-                            <Text color="white">
-                              There are no duplicated lists on this file
-                            </Text>
+                            <Text color="white">There are no duplicated lists on this file</Text>
                           </VStack>
                         </Flex>
                       )}
@@ -698,14 +629,8 @@ export const ErrorModal = ({
                 <AccordionItem bgColor="gray.200">
                   <Flex>
                     <AccordionButton color="white" fontWeight="semibold">
-                      <Box
-                        flex="1"
-                        textAlign="center"
-                        color="secondary"
-                        fontWeight="semibold"
-                      >
-                        Raw Materials Does Not Exist{" "}
-                        <Badge color="danger">{notExistRawMats?.length}</Badge>
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        Raw Materials Does Not Exist <Badge color="danger">{notExistRawMats?.length}</Badge>
                       </Box>
                       <AccordionIcon color="secondary" />
                     </AccordionButton>
@@ -727,6 +652,7 @@ export const ErrorModal = ({
                               <Th color="white">Item Description</Th>
                               <Th color="white">UOM</Th>
                               <Th color="white">Quantity Order</Th>
+                              <Th color="white">Remarks</Th>
                             </Tr>
                           </Thead>
 
@@ -734,12 +660,8 @@ export const ErrorModal = ({
                             {notExistRawMats?.map((d, i) => (
                               <Tr key={i}>
                                 <Td>{i + 1}</Td>
-                                <Td>
-                                  {moment(d?.orderDate).format("yyyy-MM-DD")}
-                                </Td>
-                                <Td>
-                                  {moment(d?.dateNeeded).format("yyyy-MM-DD")}
-                                </Td>
+                                <Td>{moment(d?.orderDate).format("yyyy-MM-DD")}</Td>
+                                <Td>{moment(d?.dateNeeded).format("yyyy-MM-DD")}</Td>
                                 <Td>{d?.farmCode}</Td>
                                 <Td>{d?.farmName}</Td>
                                 <Td>{d?.category}</Td>
@@ -747,6 +669,7 @@ export const ErrorModal = ({
                                 <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.uom}</Td>
                                 <Td>{d?.quantity}</Td>
+                                <Td>{d?.orderRemarks ? d?.orderRemarks : "-"}</Td>
                               </Tr>
                             ))}
                           </Tbody>
@@ -755,9 +678,7 @@ export const ErrorModal = ({
                         <Flex justifyContent="center" mt="30px">
                           <VStack>
                             <RiFileList3Fill fontSize="200px" />
-                            <Text color="white">
-                              There are no duplicated lists on this file
-                            </Text>
+                            <Text color="white">There are no duplicated lists on this file</Text>
                           </VStack>
                         </Flex>
                       )}
@@ -771,14 +692,8 @@ export const ErrorModal = ({
                 <AccordionItem bgColor="gray.200">
                   <Flex>
                     <AccordionButton color="white" fontWeight="semibold">
-                      <Box
-                        flex="1"
-                        textAlign="center"
-                        color="secondary"
-                        fontWeight="semibold"
-                      >
-                        UOM Does not Exist{" "}
-                        <Badge color="danger">{notExistUom?.length}</Badge>
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        UOM Does not Exist <Badge color="danger">{notExistUom?.length}</Badge>
                       </Box>
                       <AccordionIcon color="secondary" />
                     </AccordionButton>
@@ -800,6 +715,7 @@ export const ErrorModal = ({
                               <Th color="white">Item Description</Th>
                               <Th color="white">UOM</Th>
                               <Th color="white">Quantity Order</Th>
+                              <Th color="white">Remarks</Th>
                             </Tr>
                           </Thead>
 
@@ -807,12 +723,8 @@ export const ErrorModal = ({
                             {notExistUom?.map((d, i) => (
                               <Tr key={i}>
                                 <Td>{i + 1}</Td>
-                                <Td>
-                                  {moment(d?.orderDate).format("yyyy-MM-DD")}
-                                </Td>
-                                <Td>
-                                  {moment(d?.dateNeeded).format("yyyy-MM-DD")}
-                                </Td>
+                                <Td>{moment(d?.orderDate).format("yyyy-MM-DD")}</Td>
+                                <Td>{moment(d?.dateNeeded).format("yyyy-MM-DD")}</Td>
                                 <Td>{d?.farmCode}</Td>
                                 <Td>{d?.farmName}</Td>
                                 <Td>{d?.category}</Td>
@@ -820,6 +732,7 @@ export const ErrorModal = ({
                                 <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.uom}</Td>
                                 <Td>{d?.quantity}</Td>
+                                <Td>{d?.orderRemarks ? d?.orderRemarks : "-"}</Td>
                               </Tr>
                             ))}
                           </Tbody>
@@ -828,9 +741,7 @@ export const ErrorModal = ({
                         <Flex justifyContent="center" mt="30px">
                           <VStack>
                             <RiFileList3Fill fontSize="200px" />
-                            <Text color="white">
-                              There are no duplicated lists on this file
-                            </Text>
+                            <Text color="white">There are no duplicated lists on this file</Text>
                           </VStack>
                         </Flex>
                       )}
@@ -844,16 +755,8 @@ export const ErrorModal = ({
                 <AccordionItem bgColor="gray.200">
                   <Flex>
                     <AccordionButton color="white" fontWeight="semibold">
-                      <Box
-                        flex="1"
-                        textAlign="center"
-                        color="secondary"
-                        fontWeight="semibold"
-                      >
-                        Invalid Date Needed{" "}
-                        <Badge color="danger">
-                          {previousdateNeeded?.length}
-                        </Badge>
+                      <Box flex="1" textAlign="center" color="secondary" fontWeight="semibold">
+                        Invalid Date Needed <Badge color="danger">{previousdateNeeded?.length}</Badge>
                       </Box>
                       <AccordionIcon color="secondary" />
                     </AccordionButton>
@@ -875,6 +778,7 @@ export const ErrorModal = ({
                               <Th color="white">Item Description</Th>
                               <Th color="white">UOM</Th>
                               <Th color="white">Quantity Order</Th>
+                              <Th color="white">Remarks</Th>
                             </Tr>
                           </Thead>
 
@@ -882,12 +786,8 @@ export const ErrorModal = ({
                             {previousdateNeeded?.map((d, i) => (
                               <Tr key={i}>
                                 <Td>{i + 1}</Td>
-                                <Td>
-                                  {moment(d?.orderDate).format("yyyy-MM-DD")}
-                                </Td>
-                                <Td>
-                                  {moment(d?.dateNeeded).format("yyyy-MM-DD")}
-                                </Td>
+                                <Td>{moment(d?.orderDate).format("yyyy-MM-DD")}</Td>
+                                <Td>{moment(d?.dateNeeded).format("yyyy-MM-DD")}</Td>
                                 <Td>{d?.farmCode}</Td>
                                 <Td>{d?.farmName}</Td>
                                 <Td>{d?.category}</Td>
@@ -895,6 +795,7 @@ export const ErrorModal = ({
                                 <Td>{d?.itemDescription}</Td>
                                 <Td>{d?.uom}</Td>
                                 <Td>{d?.quantity}</Td>
+                                <Td>{d?.orderRemarks ? d?.orderRemarks : "-"}</Td>
                               </Tr>
                             ))}
                           </Tbody>
@@ -903,9 +804,7 @@ export const ErrorModal = ({
                         <Flex justifyContent="center" mt="30px">
                           <VStack>
                             <RiFileList3Fill fontSize="200px" />
-                            <Text color="white">
-                              There are no duplicated lists on this file
-                            </Text>
+                            <Text color="white">There are no duplicated lists on this file</Text>
                           </VStack>
                         </Flex>
                       )}
