@@ -50,7 +50,7 @@ const SyncModal = ({ isOpen, onClose, ymirPO = [], fetchData, setFetchData, from
   const toast = useToast();
 
   const dateVar = new Date();
-  const minDate = moment(dateVar.setDate(dateVar.getDate() - 3)).format("yyyy-MM-DD");
+  const minDate = moment(dateVar.setDate(dateVar.getDate() - 7)).format("yyyy-MM-DD");
 
   const ymirResultArray = Array.isArray(ymirPO)
     ? ymirPO?.flatMap((data) =>
@@ -173,7 +173,7 @@ const SyncModal = ({ isOpen, onClose, ymirPO = [], fetchData, setFetchData, from
                   <Badge fontSize="xs" colorScheme="facebook" variant="solid">
                     From:
                   </Badge>
-                  <Input onChange={(date) => setFromDate(date.target.value)} defaultValue={fromDate} min={minDate} type="date" onKeyDown={(e) => e.preventDefault()} />
+                  <Input onChange={(date) => setFromDate(date.target.value)} defaultValue={fromDate} type="date" onKeyDown={(e) => e.preventDefault()} />
                   <Badge fontSize="xs" colorScheme="facebook" variant="solid">
                     To:
                   </Badge>

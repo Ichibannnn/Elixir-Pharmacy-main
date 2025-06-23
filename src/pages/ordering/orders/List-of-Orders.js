@@ -149,7 +149,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
                 </Stack>
               ) : (
                 <Table size="sm">
-                  <Thead bgColor="secondary" position="sticky" top={0} zIndex={1}>
+                  <Thead bgColor="secondary" position="sticky" top={0}>
                     <Tr>
                       <Th color="white">Line</Th>
                       <Th color="white">Order Date</Th>

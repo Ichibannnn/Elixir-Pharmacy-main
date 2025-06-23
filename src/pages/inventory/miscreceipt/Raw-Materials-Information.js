@@ -101,9 +101,12 @@ export const RawMaterialsInformation = ({
     }
   };
 
-  const newDate = new Date();
-  const maxTransactionDate = moment(newDate).format("yyyy-MM-DD");
-  const minTransactionDate = moment(newDate.setDate(newDate.getDate() - 7)).format("yyyy-MM-DD");
+  const cutOff = 7;
+  const today = moment();
+  const isSeventhDay = today.date() < cutOff;
+  const minDate = isSeventhDay
+    ? today.clone().subtract(1, "month").format("YYYY-MM-DD") // If today is before the 7th, set minDate to one month ago
+    : today.startOf("month").format("YYYY-MM-DD"); // If today is on or after the 7th, set minDate to the start of the current month
 
   return (
     <Flex justifyContent="center" flexDirection="column" w="full">
@@ -168,7 +171,7 @@ export const RawMaterialsInformation = ({
               <Text minW="50%" w="auto" bgColor="secondary" color="white" pl={2} pr={10} py={2.5} fontSize="xs">
                 Transaction Date:{" "}
               </Text>
-              <Input onChange={(e) => setTransactionDate(e.target.value)} min={minTransactionDate} max={maxTransactionDate} type="date" bgColor="#fff8dc" />
+              <Input onChange={(e) => setTransactionDate(e.target.value)} min={minDate} max={moment(new Date()).format("yyyy-MM-DD")} type="date" bgColor="#fff8dc" />
             </HStack>
           </VStack>
         </Flex>
@@ -182,7 +185,7 @@ export const RawMaterialsInformation = ({
           </HStack>
         </VStack>
         <Flex w="full" justifyContent="end" mt={4}>
-          <Button onClick={() => openModal()} disabled={!rawMatsInfo.supplier || !details || !remarks || !transactionDate} size="xs" colorScheme="blue">
+          <Button onClick={() => openModal()} disabled={!supplierData.supplierCode || !details || !remarks || !transactionDate} size="xs" colorScheme="blue">
             New
           </Button>
         </Flex>
