@@ -261,6 +261,8 @@ export const RawMatsInfoModal = ({
   const newDate = new Date();
   const minDate = moment(newDate).format("yyyy-MM-DD");
 
+  console.log("RawMats: ", rawMatsInfo);
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={() => {}} isCentered size="5xl">

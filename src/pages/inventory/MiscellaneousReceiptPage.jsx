@@ -68,6 +68,15 @@ const MiscellaneousReceiptPage = () => {
         supplierCode: res?.[0]?.supplierCode,
         supplierName: res?.[0]?.supplierName,
       });
+
+      setRawMatsInfo({
+        itemCode: "",
+        itemDescription: "",
+        supplier: res?.[0]?.supplierName,
+        uom: "",
+        expirationDate: "",
+        quantity: "",
+      });
     });
   };
 
