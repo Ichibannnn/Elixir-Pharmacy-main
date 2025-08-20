@@ -225,7 +225,7 @@ export const ListofOrders = ({
                   <Td>{item.stockOnHand}</Td>
                   <Td>{item.orderRemarks ? item.orderRemarks : "-"}</Td>
                   <Td>
-                    <Button onClick={() => editHandler(item)} disabled={item.stockOnHand === 0} size="xs" colorScheme="yellow" color="white" px={4}>
+                    <Button onClick={() => editHandler(item)} disabled={item.stockOnHand <= 0} size="xs" colorScheme="yellow" color="white" px={4}>
                       Edit
                     </Button>
                   </Td>
