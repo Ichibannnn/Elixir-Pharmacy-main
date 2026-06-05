@@ -282,7 +282,7 @@ export const RawMatsInfoModal = ({
                   <Text minW="50%" w="auto" bgColor="secondary" color="white" pl={2} pr={7} py={2.5} fontSize="xs">
                     Item Code:{" "}
                   </Text>
-                  \
+
                   {rawMats.length > 0 ? (
                     <Select onChange={(e) => itemCodeHandler(e.target.value)} w="full" placeholder=" " bgColor="#fff8dc">
                       {rawMats?.map((item, i) => (

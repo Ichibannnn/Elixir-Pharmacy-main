@@ -1,5 +1,4 @@
 // RM QC Receiving
-
 import React, { useState, useEffect, useContext } from "react";
 import {
   Flex,

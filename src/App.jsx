@@ -145,9 +145,7 @@ function App() {
   //Get Added Misc Issues per Item
   const userId = user?.id;
   const fetchActiveMiscIssuesApi = async (userId) => {
-    const res = await apiClient.get(
-      `Miscellaneous/GetAllActiveMiscellaneousIssueTransaction?empId=${userId}`
-    );
+    const res = await apiClient.get(`Miscellaneous/GetAllActiveMiscellaneousIssueTransaction?empId=${userId}`);
     return res.data;
   };
   //Misc Issue Data
@@ -164,11 +162,7 @@ function App() {
     };
   }, [userId]);
   // Open modal to cancel all ID on table if re-routed without saving
-  const {
-    isOpen: isArrayCancel,
-    onClose: closeArrayCancel,
-    onOpen: openArrayCancel,
-  } = useDisclosure();
+  const { isOpen: isArrayCancel, onClose: closeArrayCancel, onOpen: openArrayCancel } = useDisclosure();
   const path = useLocation();
   const pathMiscIssue = "/inventory/miscellaneous-issue";
   useEffect(() => {
@@ -194,76 +188,26 @@ function App() {
           path="/"
           element={
             user ? (
-              <Layout
-                sideBarHandler={SideBarHandler}
-                isSidebarVisible={isSidebarVisible}
-                notification={notification}
-                fetchNotification={fetchNotification}
-              />
+              <Layout sideBarHandler={SideBarHandler} isSidebarVisible={isSidebarVisible} notification={notification} fetchNotification={fetchNotification} />
             ) : (
               <Navigate to="/login" />
             )
           }
         >
-          <Route
-            path="inventory"
-            element={
-              user ? (
-                <InventoryPage
-                  notification={notification}
-                  fetchNotification={fetchNotification}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          >
-            <Route
-              path="mrp"
-              element={user ? <MrpPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="move-order"
-              element={
-                user ? (
-                  <MoveOrderPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
+          {/* Inventory */}
+          <Route path="inventory" element={user ? <InventoryPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />}>
+            <Route path="mrp" element={user ? <MrpPage /> : <Navigate to="/login" />} />
+            <Route path="move-order" element={user ? <MoveOrderPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
             <Route
               path="transact-move-order"
-              element={
-                user ? (
-                  <TransactMoveOrderPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
+              element={user ? <TransactMoveOrderPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />}
             />
-            <Route
-              path="miscellaneous-receipt"
-              element={
-                user ? <MiscellaneousReceiptPage /> : <Navigate to="/login" />
-              }
-            />
+            <Route path="miscellaneous-receipt" element={user ? <MiscellaneousReceiptPage /> : <Navigate to="/login" />} />
             <Route
               path="miscellaneous-issue"
               element={
                 user ? (
-                  <MiscellaneousIssuePage
-                    miscData={miscData}
-                    fetchActiveMiscIssues={fetchActiveMiscIssues}
-                    navigation={navigation}
-                    setNavigation={setNavigation}
-                  />
+                  <MiscellaneousIssuePage miscData={miscData} fetchActiveMiscIssues={fetchActiveMiscIssues} navigation={navigation} setNavigation={setNavigation} />
                 ) : (
                   <Navigate to="/login" />
                 )
@@ -271,452 +215,98 @@ function App() {
             />
           </Route>
 
-          <Route
-            path="qc-module"
-            element={
-              user ? (
-                <QcModulePage
-                  notification={notification}
-                  fetchNotification={fetchNotification}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          >
-            <Route
-              path="qc-receiving"
-              element={
-                user ? (
-                  <QCReceivingPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="wh-receiving"
-              element={
-                user ? (
-                  <RMWHReceivingPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="wh-confirm-reject"
-              element={
-                user ? (
-                  <WHConfirmReject
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="rm-nearly-expire"
-              element={
-                user ? (
-                  <RMNearlyExpirePage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
+          {/* QC Module */}
+          <Route path="qc-module" element={user ? <QcModulePage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />}>
+            <Route path="qc-receiving" element={user ? <QCReceivingPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
+            <Route path="wh-receiving" element={user ? <RMWHReceivingPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
+            <Route path="wh-confirm-reject" element={user ? <WHConfirmReject notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
+            <Route path="rm-nearly-expire" element={user ? <RMNearlyExpirePage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
             <Route
               path="approval-wh-rejection"
-              element={
-                user ? (
-                  <RejectRMWHReceiving
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
+              element={user ? <RejectRMWHReceiving notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />}
             />
-            <Route
-              path="cancelled-rm"
-              element={
-                user ? (
-                  <CancelledRMPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
+            <Route path="cancelled-rm" element={user ? <CancelledRMPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
           </Route>
 
-          <Route
-            path="receiving"
-            element={user ? <ReceivingPage /> : <Navigate to="/login" />}
-          >
-            <Route
-              path="rm-receiving"
-              element={user ? <RmReceivingPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="receiving-list"
-              element={user ? <ReceivingList /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="received-rm"
-              element={user ? <ReceivedRM /> : <Navigate to="/login" />}
-            />
+          {/* Receiving */}
+          <Route path="receiving" element={user ? <ReceivingPage /> : <Navigate to="/login" />}>
+            <Route path="rm-receiving" element={user ? <RmReceivingPage /> : <Navigate to="/login" />} />
+            <Route path="receiving-list" element={user ? <ReceivingList /> : <Navigate to="/login" />} />
+            <Route path="received-rm" element={user ? <ReceivedRM /> : <Navigate to="/login" />} />
           </Route>
 
-          <Route
-            path="ordering"
-            element={
-              user ? (
-                <OrderingPage
-                  notification={notification}
-                  fetchNotification={fetchNotification}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          >
-            <Route
-              path="orders"
-              element={
-                user ? (
-                  <OrdersPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
+          {/* Ordering */}
+          <Route path="ordering" element={user ? <OrderingPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />}>
+            <Route path="orders" element={user ? <OrdersPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
             <Route
               path="preparation-schedule"
-              element={
-                user ? (
-                  <PreparationSchedulePage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
+              element={user ? <PreparationSchedulePage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />}
             />
-            <Route
-              path="approval"
-              element={
-                user ? (
-                  <ApprovalPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="order-summary"
-              element={user ? <OrderSummaryPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="calendar"
-              element={user ? <Calendar /> : <Navigate to="/login" />}
-            />
+            <Route path="approval" element={user ? <ApprovalPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
+            <Route path="order-summary" element={user ? <OrderSummaryPage /> : <Navigate to="/login" />} />
+            <Route path="calendar" element={user ? <Calendar /> : <Navigate to="/login" />} />
           </Route>
 
-          <Route
-            path="transformation"
-            element={
-              user ? (
-                <TransformationPage
-                  notification={notification}
-                  fetchNotification={fetchNotification}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          >
+          {/* Transformation  */}
+          <Route path="transformation" element={user ? <TransformationPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />}>
             <Route
               path="transformation-planning"
-              element={
-                user ? (
-                  <TransformationPlanningPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
+              element={user ? <TransformationPlanningPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />}
             >
-              <Route
-                path="add-request"
-                element={
-                  user ? (
-                    <AddRequest
-                      notification={notification}
-                      fetchNotification={fetchNotification}
-                    />
-                  ) : (
-                    <Navigate to="/login" />
-                  )
-                }
-              />
-              <Route
-                path="status-of-request"
-                element={
-                  user ? (
-                    <StatusOfRequest
-                      notification={notification}
-                      fetchNotification={fetchNotification}
-                    />
-                  ) : (
-                    <Navigate to="/login" />
-                  )
-                }
-              />
+              <Route path="add-request" element={user ? <AddRequest notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
+              <Route path="status-of-request" element={user ? <StatusOfRequest notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
               {/* <Route path="request-reject" element={user ? <RequestReject notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} /> */}
             </Route>
-            <Route
-              path="approval-request"
-              element={
-                user ? (
-                  <ApprovalRequestPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="preparation"
-              element={
-                user ? (
-                  <PreparationPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="mixing"
-              element={
-                user ? (
-                  <MixingPage
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
+            <Route path="approval-request" element={user ? <ApprovalRequestPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
+            <Route path="preparation" element={user ? <PreparationPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
+            <Route path="mixing" element={user ? <MixingPage notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
           </Route>
 
-          <Route
-            path="import"
-            element={user ? <ImportPage /> : <Navigate to="/login" />}
-          >
-            <Route
-              path="import-po"
-              element={user ? <ImportPoPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="import-order"
-              element={user ? <ImportOrderPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="import-raw-materials"
-              element={
-                user ? <ImportRawMaterialsPage /> : <Navigate to="/login" />
-              }
-            />
-            <Route
-              path="import-formulation-code"
-              element={
-                user ? <ImportFormulationCodePage /> : <Navigate to="/login" />
-              }
-            />
-            <Route
-              path="import-supplier"
-              element={user ? <ImportSupplier /> : <Navigate to="/login" />}
-            />
+          {/* Import */}
+          <Route path="import" element={user ? <ImportPage /> : <Navigate to="/login" />}>
+            <Route path="import-po" element={user ? <ImportPoPage /> : <Navigate to="/login" />} />
+            <Route path="import-order" element={user ? <ImportOrderPage /> : <Navigate to="/login" />} />
+            <Route path="import-raw-materials" element={user ? <ImportRawMaterialsPage /> : <Navigate to="/login" />} />
+            <Route path="import-formulation-code" element={user ? <ImportFormulationCodePage /> : <Navigate to="/login" />} />
+            <Route path="import-supplier" element={user ? <ImportSupplier /> : <Navigate to="/login" />} />
           </Route>
 
-          <Route
-            path="user-management"
-            element={user ? <UserManagementPage /> : <Navigate to="/login" />}
-          >
-            <Route
-              path="user-account"
-              element={user ? <UserAccountPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="user-role"
-              element={user ? <UserRolePage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="module-management"
-              element={
-                user ? <ModuleManagementPage /> : <Navigate to="/login" />
-              }
-            />
-            <Route
-              path="departments"
-              element={user ? <DepartmentsPage /> : <Navigate to="/login" />}
-            />
+          {/* User Management */}
+          <Route path="user-management" element={user ? <UserManagementPage /> : <Navigate to="/login" />}>
+            <Route path="user-account" element={user ? <UserAccountPage /> : <Navigate to="/login" />} />
+            <Route path="user-role" element={user ? <UserRolePage /> : <Navigate to="/login" />} />
+            <Route path="module-management" element={user ? <ModuleManagementPage /> : <Navigate to="/login" />} />
+            <Route path="departments" element={user ? <DepartmentsPage /> : <Navigate to="/login" />} />
           </Route>
 
-          <Route
-            path="setup"
-            element={user ? <SetupPage /> : <Navigate to="/login" />}
-          >
-            <Route
-              path="uom-management"
-              element={user ? <UomManagementPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="lot-management"
-              element={user ? <LotManagementPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="lot-category"
-              element={user ? <LotCategoryPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="raw-materials-masterlisting"
-              element={user ? <RawMaterialsPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="item-category"
-              element={user ? <ItemCategoryPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="customer-management"
-              element={
-                user ? <CustomerManagementPage /> : <Navigate to="/login" />
-              }
-            />
-            <Route
-              path="farms"
-              element={user ? <FarmPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="supplier"
-              element={user ? <SupplierPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="t-management"
-              element={
-                user ? (
-                  <TransformationManagementPage />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="reason"
-              element={user ? <ReasonPage /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="transaction-type"
-              element={
-                user ? <TransactionTypePage /> : <Navigate to="/login" />
-              }
-            />
+          {/* Setup */}
+          <Route path="setup" element={user ? <SetupPage /> : <Navigate to="/login" />}>
+            <Route path="uom-management" element={user ? <UomManagementPage /> : <Navigate to="/login" />} />
+            <Route path="lot-management" element={user ? <LotManagementPage /> : <Navigate to="/login" />} />
+            <Route path="lot-category" element={user ? <LotCategoryPage /> : <Navigate to="/login" />} />
+            <Route path="raw-materials-masterlisting" element={user ? <RawMaterialsPage /> : <Navigate to="/login" />} />
+            <Route path="item-category" element={user ? <ItemCategoryPage /> : <Navigate to="/login" />} />
+            <Route path="customer-management" element={user ? <CustomerManagementPage /> : <Navigate to="/login" />} />
+            <Route path="farms" element={user ? <FarmPage /> : <Navigate to="/login" />} />
+            <Route path="supplier" element={user ? <SupplierPage /> : <Navigate to="/login" />} />
+            <Route path="t-management" element={user ? <TransformationManagementPage /> : <Navigate to="/login" />} />
+            <Route path="reason" element={user ? <ReasonPage /> : <Navigate to="/login" />} />
+            <Route path="transaction-type" element={user ? <TransactionTypePage /> : <Navigate to="/login" />} />
           </Route>
 
-          <Route
-            path="move-order-approval"
-            element={
-              user ? (
-                <MoveOrderApproval
-                  notification={notification}
-                  fetchNotification={fetchNotification}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          >
-            <Route
-              path="for-approval"
-              element={
-                user ? (
-                  <ForApprovalMO
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="approved-mo"
-              element={
-                user ? (
-                  <ApprovedMO
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="rejected-mo"
-              element={
-                user ? (
-                  <RejectedMO
-                    notification={notification}
-                    fetchNotification={fetchNotification}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
+          {/* Move Order */}
+          <Route path="move-order-approval" element={user ? <MoveOrderApproval notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />}>
+            <Route path="for-approval" element={user ? <ForApprovalMO notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
+            <Route path="approved-mo" element={user ? <ApprovedMO notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
+            <Route path="rejected-mo" element={user ? <RejectedMO notification={notification} fetchNotification={fetchNotification} /> : <Navigate to="/login" />} />
           </Route>
 
-          <Route
-            path="reports"
-            element={user ? <ReportsPage /> : <Navigate to="/login" />}
-          >
-            <Route
-              path="reports"
-              element={user ? <Reports /> : <Navigate to="/login" />}
-            />
+          {/* Reports */}
+          <Route path="reports" element={user ? <ReportsPage /> : <Navigate to="/login" />}>
+            <Route path="reports" element={user ? <Reports /> : <Navigate to="/login" />} />
           </Route>
         </Route>
+
         <Route path="/login" element={<LoginPage />} />
       </Routes>
 
@@ -733,20 +323,10 @@ function App() {
   );
 }
 
-function Layout({
-  isSidebarVisible,
-  sideBarHandler,
-  notification,
-  fetchNotification,
-}) {
+function Layout({ isSidebarVisible, sideBarHandler, notification, fetchNotification }) {
   return (
     <Flex bgColor="white" h="100vh">
-      {!isSidebarVisible && (
-        <Sidebar
-          notification={notification}
-          fetchNotification={fetchNotification}
-        />
-      )}
+      {!isSidebarVisible && <Sidebar notification={notification} fetchNotification={fetchNotification} />}
       <AppScroll>
         <Flex w="full" bgColor="gray.300" flexDirection="column">
           <Header sideBarHandler={sideBarHandler} />
@@ -762,13 +342,7 @@ function Layout({
 export default App;
 
 //Misc Issue Cancel Array
-const CancelArrayModalConfirmation = ({
-  isOpen,
-  onClose,
-  miscData,
-  fetchActiveMiscIssues,
-  setNavigation,
-}) => {
+const CancelArrayModalConfirmation = ({ isOpen, onClose, miscData, fetchActiveMiscIssues, setNavigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
@@ -784,12 +358,7 @@ const CancelArrayModalConfirmation = ({
       const res = apiClient
         .put(`Miscellaneous/CancelItemCodeInMiscellaneousIssue`, cancelArray)
         .then((res) => {
-          ToastComponent(
-            "Warning",
-            "Items has been cancelled",
-            "success",
-            toast
-          );
+          ToastComponent("Warning", "Items has been cancelled", "success", toast);
           fetchActiveMiscIssues();
           onClose();
         })
@@ -834,12 +403,7 @@ const CancelArrayModalConfirmation = ({
 
         <ModalFooter>
           <ButtonGroup>
-            <Button
-              onClick={cancelArraySubmitHandler}
-              isLoading={isLoading}
-              disabled={isLoading}
-              colorScheme="blue"
-            >
+            <Button onClick={cancelArraySubmitHandler} isLoading={isLoading} disabled={isLoading} colorScheme="blue">
               Yes
             </Button>
             <Button onClick={noHandler} isLoading={isLoading} colorScheme="red">

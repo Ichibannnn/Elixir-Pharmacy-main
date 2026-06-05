@@ -4,22 +4,22 @@ import { decodeUser } from "./decode-user";
 const user = decodeUser();
 
 // Local Backend
-export default axios.create({
-  baseURL: "https://localhost:44342/api/",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + user?.token,
-  },
-});
-
-// KEIGH BACKEND
 // export default axios.create({
-//   baseURL: "https://10.10.10.14:6001/api/",
+//   baseURL: "https://localhost:44342/api/",
 //   headers: {
 //     "Content-Type": "application/json",
 //     Authorization: "Bearer " + user?.token,
 //   },
 // });
+
+// KEIGH BACKEND
+export default axios.create({
+  baseURL: "https://10.10.10.14:10001/api/",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + user?.token,
+  },
+});
 
 // LIVE
 // export default axios.create({

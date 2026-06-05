@@ -1,12 +1,39 @@
 import React, { useState } from "react";
-import { Badge, Flex, HStack, Input, Select, Skeleton, Spinner, Stack, Table, Tbody, Td, Text, Th, Thead, Tr, useDisclosure, VStack } from "@chakra-ui/react";
+import {
+  Badge,
+  Flex,
+  HStack,
+  Input,
+  Select,
+  Skeleton,
+  Spinner,
+  Stack,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+  VStack,
+} from "@chakra-ui/react";
 import { HiRefresh } from "react-icons/hi";
 import PageScrollReusable from "../../../components/PageScroll-Reusable";
 import { ErrorModal } from "./Error-Modal";
 import { ConfirmModal } from "./Confirm-Modal";
 import DatePicker from "react-datepicker";
 
-export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFromDate, setToDate, fromDate, toDate, fetchNotification }) => {
+export const ListofOrders = ({
+  genusOrders,
+  genusOrdersNew,
+  fetchingData,
+  setFromDate,
+  setToDate,
+  fromDate,
+  toDate,
+  fetchNotification,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [keyword, setKeyword] = useState("");
@@ -71,15 +98,6 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
     setSelectedValue(value);
   };
 
-  // console.log("Genus Old: ", genusOrders);
-  // console.log("Genus New: ", genusOrdersNew);
-  //   console.log("Selected Value:", selectedValue);
-
-  //   console.log("Genus Old Counts: ", genusOrders?.genus_orders?.length);
-  //   console.log("Genus New Counts: ", genusOrdersNew?.genus_order?.length);
-
-  //   console.log("Result Array New: ", resultArrayNew);
-
   return (
     <Flex w="full" p={5} flexDirection="column">
       <Flex justifyContent="center" spacing={4}>
@@ -128,9 +146,17 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
           <Flex w="full" p={2} justifyContent="space-between">
             <HStack>
               <Text fontSize="sm">SEARCH:</Text>
-              <Input placeholder="ex. Farm Name" onChange={(e) => setKeyword(e.target.value)} disabled={isLoading} />
+              <Input
+                placeholder="ex. Farm Name"
+                onChange={(e) => setKeyword(e.target.value)}
+                disabled={isLoading}
+              />
             </HStack>
-            {isLoading ? <Spinner cursor="pointer" onClick={() => setIsLoading(false)} /> : <HiRefresh fontSize="25px" cursor="pointer" onClick={() => openConfirm()} />}
+            {isLoading ? (
+              <Spinner cursor="pointer" onClick={() => setIsLoading(false)} />
+            ) : (
+              <HiRefresh fontSize="25px" cursor="pointer" onClick={() => openConfirm()} />
+            )}
           </Flex>
 
           <VStack spacing={0} w="full">
@@ -184,7 +210,9 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
                             <Td>{order.order_details.order.category}</Td>
                             <Td>{order.order_details.order.uom}</Td>
                             <Td>{order.order_details.order.quantity}</Td>
-                            <Td>{order.order_details.order.remarks ? order.order_details.order.remarks : "-"}</Td>
+                            <Td>
+                              {order.order_details.order.remarks ? order.order_details.order.remarks : "-"}
+                            </Td>
                           </Tr>
                         ))}
                     </Tbody>
@@ -207,7 +235,9 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
                             <Td>{order.order_details.order.category}</Td>
                             <Td>{order.order_details.order.uom}</Td>
                             <Td>{order.order_details.order.quantity}</Td>
-                            <Td>{order.order_details.order.remarks ? order.order_details.order.remarks : "-"}</Td>
+                            <Td>
+                              {order.order_details.order.remarks ? order.order_details.order.remarks : "-"}
+                            </Td>
                           </Tr>
                         ))}
                     </Tbody>
@@ -220,6 +250,7 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
       ) : (
         ""
       )}
+
       {fromDate && toDate && selectedValue === "1" ? (
         <Text mt={3} fontSize="xs">
           Number of records: {genusOrders?.genus_orders?.length}
@@ -229,7 +260,16 @@ export const ListofOrders = ({ genusOrders, genusOrdersNew, fetchingData, setFro
           Number of records: {genusOrdersNew?.genus_order?.length}
         </Text>
       )}
-      {isError && <ErrorModal isOpen={isError} onClose={closeError} errorData={errorData} openConfirm={openConfirm} isLoading={isLoading} fetchNotification={fetchNotification} />}
+      {isError && (
+        <ErrorModal
+          isOpen={isError}
+          onClose={closeError}
+          errorData={errorData}
+          openConfirm={openConfirm}
+          isLoading={isLoading}
+          fetchNotification={fetchNotification}
+        />
+      )}
       {isConfirm && (
         <ConfirmModal
           isOpen={isConfirm}

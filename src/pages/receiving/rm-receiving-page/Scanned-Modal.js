@@ -95,6 +95,16 @@ const ScannedModal = ({ receivingId, itemCodeData, setReceivingDate, setLotCateg
     }
   };
 
+  const today = new Date();
+  const dayOfMonth = today.getDate();
+
+  const minDate =
+    dayOfMonth <= 7
+      ? // 1st day of previous month
+        new Date(today.getFullYear(), today.getMonth() - 1, 1)
+      : // 1st day of current month
+        new Date(today.getFullYear(), today.getMonth(), 1);
+
   return (
     <Flex justifyContent="space-between" flexDirection="column">
       <PageScrollReceiving>
@@ -113,15 +123,7 @@ const ScannedModal = ({ receivingId, itemCodeData, setReceivingDate, setLotCateg
 
             <FormLabel w="40%">
               Receiving Date
-              <DatePicker
-                onChange={(date) => receivingDateProvider(date)}
-                minDate={new Date(new Date().setDate(new Date().getDate() - 3))}
-                maxDate={new Date()}
-                shouldCloseOnSelect
-                selected={receivingDateDisplay}
-                // className='chakra-input css-7s3glp'
-                // wrapperClassName='datePicker'
-              />
+              <DatePicker onChange={(date) => receivingDateProvider(date.target.value)} minDate={minDate} maxDate={today} shouldCloseOnSelect selected={receivingDateDisplay} />
             </FormLabel>
           </Flex>
 
